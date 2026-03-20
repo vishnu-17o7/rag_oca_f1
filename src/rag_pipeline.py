@@ -5,6 +5,7 @@ Loads PDF documents, builds vector store, and queries with Ollama
 
 import glob
 import os
+import torch
 from typing import List, Optional
 
 from langchain_community.document_loaders import PyPDFLoader
@@ -51,8 +52,13 @@ class RAGPipeline:
 
         # Create embeddings
         print("[STEP 1/5] Loading embedding model...")
+        
+        # Determine optimal device
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        print(f"  -> Using device mapping: {device}")
+        
         embeddings = HuggingFaceEmbeddings(
-            model_name="BAAI/bge-small-en-v1.5", model_kwargs={"device": "cpu"}
+            model_name="BAAI/bge-small-en-v1.5", model_kwargs={"device": device}
         )
 
         persist_dir = f"./chroma_db/db_{self.chunk_size}_{self.chunk_overlap}"
