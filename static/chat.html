@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>F1 REG / RAG - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&amp;family=Inter:wght@400;500&amp;family=Space+Grotesk:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-fixed": "#5d5f5f",
+                        "surface-container-high": "#2a2a2a",
+                        "surface-container-lowest": "#0e0e0e",
+                        "inverse-on-surface": "#303030",
+                        "surface-bright": "#393939",
+                        "surface-container": "#1f1f1f",
+                        "tertiary-container": "#929090",
+                        "on-surface": "#e2e2e2",
+                        "tertiary": "#e5e2e1",
+                        "secondary-fixed-dim": "#acabab",
+                        "on-secondary-fixed-variant": "#3b3b3b",
+                        "background": "#000000",
+                        "on-tertiary-fixed-variant": "#e5e2e1",
+                        "surface": "#000000",
+                        "inverse-primary": "#5d5f5f",
+                        "on-error": "#690005",
+                        "on-primary": "#000000",
+                        "surface-tint": "#c6c6c7",
+                        "on-tertiary-container": "#000000",
+                        "inverse-surface": "#e2e2e2",
+                        "on-primary-fixed-variant": "#e2e2e2",
+                        "on-secondary-fixed": "#1b1c1c",
+                        "outline-variant": "#222222",
+                        "primary-fixed-dim": "#454747",
+                        "secondary-container": "#464747",
+                        "error-container": "#93000a",
+                        "on-secondary-container": "#e4e2e2",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed": "#ffffff",
+                        "on-primary-container": "#000000",
+                        "surface-variant": "#111111",
+                        "on-secondary": "#1b1c1c",
+                        "surface-dim": "#000000",
+                        "primary": "#ffffff",
+                        "on-surface-variant": "#c6c6c6",
+                        "error": "#ffb4ab",
+                        "tertiary-fixed-dim": "#474746",
+                        "surface-container-highest": "#111111",
+                        "on-background": "#ffffff",
+                        "on-tertiary": "#1b1c1c",
+                        "tertiary-fixed": "#5f5e5e",
+                        "on-tertiary-fixed": "#ffffff",
+                        "primary-container": "#d4d4d4",
+                        "surface-container-low": "#0a0a0a",
+                        "outline": "#666666",
+                        "secondary-fixed": "#c7c6c6",
+                        "secondary": "#c7c6c6"
+                    },
+                    fontFamily: {
+                        "mono": ["IBM Plex Mono", "monospace"],
+                        "sans": ["Inter", "sans-serif"],
+                        "headline": ["Space Grotesk", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+        .mono { font-family: 'IBM Plex Mono', monospace; }
+        .border-base { border-color: #1a1a1a; }
+        .border-panel { border-color: #222222; }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #111111; }
+        ::-webkit-scrollbar-thumb { background: #ffffff; border: 1px solid #000000; }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body class="flex h-screen w-full overflow-hidden bg-black text-white">
+<!-- LEFT PANEL: SIDENAVBAR & SYSTEM STATS -->
+<aside class="w-[240px] h-full flex flex-col border-r border-zinc-900 bg-black shrink-0 fixed left-0 top-0 z-20">
+<!-- Header Section -->
+<div class="p-4 border-b border-zinc-900">
+<h1 class="text-[12px] font-semibold tracking-[0.1em] font-mono text-white uppercase">F1 REG / RAG</h1>
+<p class="text-[10px] font-mono text-zinc-500 uppercase mt-1">POWERED BY OCA + PHI3</p>
+</div>
+<!-- Hyperparameters Section -->
+<div class="p-4 flex flex-col gap-4">
+<h2 class="text-[11px] font-semibold tracking-[0.1em] font-mono uppercase text-zinc-500">HYPERPARAMETERS</h2>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<span class="block text-[10px] font-mono text-zinc-500 uppercase">CHUNKS</span>
+<span id="ctrl-chunk-size" class="block text-sm font-mono text-white">600</span>
+</div>
+<div>
+<span class="block text-[10px] font-mono text-zinc-500 uppercase">OVERLAP</span>
+<span id="ctrl-chunk-overlap" class="block text-sm font-mono text-white">80</span>
+</div>
+<div>
+<span class="block text-[10px] font-mono text-zinc-500 uppercase">TEMP</span>
+<span id="ctrl-temperature" class="block text-sm font-mono text-white">0.2</span>
+</div>
+<div>
+<span class="block text-[10px] font-mono text-zinc-500 uppercase">TOP_K</span>
+<span id="ctrl-top-k" class="block text-sm font-mono text-white">4</span>
+</div>
+</div>
+</div>
+<!-- Optimization History (Sparkline) -->
+<div class="p-4 mt-2">
+<h2 class="text-[11px] font-semibold tracking-[0.1em] font-mono uppercase text-zinc-500 mb-4">OPTIMIZATION HISTORY</h2>
+<div class="h-20 w-full relative border-l border-b border-zinc-800 flex items-end">
+<!-- Simple SVG Sparkline -->
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 100 40">
+<path d="M0 35 L10 32 L20 34 L30 25 L40 28 L50 15 L60 18 L70 10 L80 12 L90 5 L100 6" fill="none" stroke="white" stroke-width="1.5"></path>
+</svg>
+<div class="absolute -left-6 top-0 h-full flex flex-col justify-between text-[8px] font-mono text-zinc-600">
+<span>0.85</span>
+<span>0.30</span>
+</div>
+<div class="absolute -bottom-4 w-full flex justify-between text-[8px] font-mono text-zinc-600">
+<span>ITERATIONS</span>
+<span>FITNESS</span>
+</div>
+</div>
+</div>
+<!-- Stat Pills -->
+<div class="p-4 space-y-3 mt-4">
+<div class="border border-zinc-800 p-2 flex flex-col">
+<span class="text-[10px] font-mono text-zinc-500 uppercase">BEST SCORE</span>
+<span class="text-lg font-mono text-white">0.847</span>
+</div>
+<div class="border border-zinc-800 p-2 flex flex-col">
+<span class="text-[10px] font-mono text-zinc-500 uppercase">ITERATIONS</span>
+<span class="text-lg font-mono text-white">50</span>
+</div>
+<div class="border border-zinc-800 p-2 flex flex-col">
+<span class="text-[10px] font-mono text-zinc-500 uppercase">CALLS USED</span>
+<span class="text-lg font-mono text-white">47</span>
+</div>
+</div>
+<!-- Sidebar Navigation (Footer area) -->
+<div class="mt-auto p-4 border-t border-zinc-900">
+<a class="flex items-center gap-2 text-[10px] font-mono text-zinc-500 hover:text-white transition-colors duration-0 uppercase" href="#">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+<span>FULL REPORT</span>
+</a>
+</div>
+</aside>
+<!-- MAIN CENTER PANEL: CHAT INTERFACE -->
+<main class="ml-[240px] mr-[280px] flex-1 flex flex-col h-full bg-black relative">
+<!-- TopAppBar Content -->
+<header class="h-12 border-b border-zinc-900 flex justify-between items-center px-4 shrink-0">
+<div class="flex items-center gap-2">
+<span class="text-[11px] font-mono text-zinc-500 uppercase">DASHBOARD / CHAT</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 text-[11px] font-mono text-white uppercase font-bold">
+<span class="w-[4px] h-[4px] bg-white"></span>
+<span id="model-status">PHI3 ONLINE</span>
+</div>
+<div class="flex items-center gap-3 text-zinc-500">
+<span class="material-symbols-outlined hover:text-white cursor-pointer" data-icon="settings">settings</span>
+<span class="material-symbols-outlined hover:text-white cursor-pointer" data-icon="terminal">terminal</span>
+</div>
+</div>
+</header>
+<!-- Chat Area -->
+<section id="chat-log" class="flex-1 overflow-y-auto p-6 space-y-8">
+<!-- User Message -->
+<div class="flex flex-col items-end gap-1">
+<div class="bg-white text-black p-4 max-w-[80%] text-sm font-sans leading-relaxed">
+                    How many power unit elements are allowed per season?
+                </div>
+<span class="text-[10px] font-mono text-zinc-500 uppercase">USER — 14:02:11</span>
+</div>
+<!-- Bot Message -->
+<div class="flex flex-col items-start gap-1">
+<div class="bg-zinc-900 text-white p-4 max-w-[85%] border border-zinc-800 text-sm font-sans leading-relaxed">
+                    According to Article 28.2 of the FIA Sporting Regulations, each driver is permitted to use a maximum of 4 internal combustion engines, 4 motor generator units-heat, and 4 energy stores during a Championship season. Use of additional elements results in a grid penalty.
+                </div>
+<span class="text-[10px] font-mono text-zinc-500 uppercase">PHI3 — 14:02:12</span>
+</div>
+</section>
+<!-- Input Bar -->
+<footer class="p-4 border-t border-zinc-900 bg-black">
+<div class="flex gap-2">
+<div class="flex-1 bg-[#111111] border border-zinc-800 flex items-center px-4">
+<input id="chat-input" class="w-full bg-transparent border-none text-white font-mono text-sm focus:ring-0 placeholder-zinc-700" placeholder="QUERY SYSTEM REGULATIONS..." type="text"/>
+</div>
+<button id="send-btn" class="bg-white text-black px-6 py-2 text-[12px] font-semibold font-mono uppercase rounded-[2px] hover:bg-zinc-200 transition-colors duration-0">
+                    SEND
+                </button>
+</div>
+</footer>
+</main>
+<!-- RIGHT PANEL: CONTEXT & METADATA -->
+<aside class="w-[280px] h-full flex flex-col border-l border-zinc-900 bg-black shrink-0 fixed right-0 top-0">
+<div class="p-4 border-b border-zinc-900 h-12 flex items-center">
+<h2 class="text-[11px] font-semibold tracking-[0.1em] font-mono uppercase text-zinc-500">RETRIEVAL CONTEXT</h2>
+</div>
+<div id="chunks-container" class="p-4 flex-1 overflow-y-auto space-y-4">
+<!-- Chunk Card 01 -->
+<div class="bg-[#0a0a0a] border border-zinc-800 p-4">
+<div class="flex justify-between items-center mb-2">
+<span class="text-[10px] font-mono text-white">CHUNK 01 / 03</span>
+<span class="text-[10px] font-mono text-zinc-500">SCORE 0.91</span>
+</div>
+<p class="text-[12px] font-sans text-zinc-400 leading-relaxed mb-3">
+                    Article 28.2. Each driver is permitted to use no more than 4 (four) internal combustion engines (ICE), 4 (four) motor generator units-heat (MGU-H)...
+                </p>
+<div class="text-[9px] font-mono text-zinc-600 border-t border-zinc-900 pt-2 uppercase">
+                    FIA SPORTING REGULATIONS 2024
+                </div>
+</div>
+<!-- Chunk Card 02 -->
+<div class="bg-[#0a0a0a] border border-zinc-800 p-4">
+<div class="flex justify-between items-center mb-2">
+<span class="text-[10px] font-mono text-white">CHUNK 02 / 03</span>
+<span class="text-[10px] font-mono text-zinc-500">SCORE 0.88</span>
+</div>
+<p class="text-[12px] font-sans text-zinc-400 leading-relaxed mb-3">
+                    Should a driver use more than the permitted number of any of the seven elements, a grid place penalty will be imposed at the first Competition...
+                </p>
+<div class="text-[9px] font-mono text-zinc-600 border-t border-zinc-900 pt-2 uppercase">
+                    FIA SPORTING REGULATIONS 2024
+                </div>
+</div>
+<!-- Chunk Card 03 -->
+<div class="bg-[#0a0a0a] border border-zinc-800 p-4">
+<div class="flex justify-between items-center mb-2">
+<span class="text-[10px] font-mono text-white">CHUNK 03 / 03</span>
+<span class="text-[10px] font-mono text-zinc-500">SCORE 0.85</span>
+</div>
+<p class="text-[12px] font-sans text-zinc-400 leading-relaxed mb-3">
+                    The elements include: ICE, TC, MGU-H, MGU-K, ES, CE and EX. Any newly introduced power unit element will be deemed to have been used...
+                </p>
+<div class="text-[9px] font-mono text-zinc-600 border-t border-zinc-900 pt-2 uppercase">
+                    TECHNICAL DIRECTIVE 044-C
+                </div>
+</div>
+</div>
+<!-- Footer: Current Parameters Grid -->
+<div class="p-4 border-t border-zinc-900 bg-[#050505]">
+<h3 class="text-[10px] font-mono text-zinc-600 uppercase mb-3">CURRENT SETTINGS</h3>
+<div id="params-used-display" class="grid grid-cols-2 gap-2 text-xs font-mono text-white">
+<div class="bg-[#111111] border border-zinc-800 p-2">
+<span class="block text-[8px] font-mono text-zinc-600 uppercase">SIZE</span>
+<span class="block text-xs font-mono text-white">600</span>
+</div>
+<div class="bg-[#111111] border border-zinc-800 p-2">
+<span class="block text-[8px] font-mono text-zinc-600 uppercase">OVER</span>
+<span class="block text-xs font-mono text-white">80</span>
+</div>
+<div class="bg-[#111111] border border-zinc-800 p-2">
+<span class="block text-[8px] font-mono text-zinc-600 uppercase">TEMP</span>
+<span class="block text-xs font-mono text-white">0.2</span>
+</div>
+<div class="bg-[#111111] border border-zinc-800 p-2">
+<span class="block text-[8px] font-mono text-zinc-600 uppercase">K</span>
+<span class="block text-xs font-mono text-white">4</span>
+</div>
+</div>
+</div>
+</aside>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────
+const API_BASE = window.location.origin;
+
+// ── HEALTH CHECK ON LOAD ──────────────────────────────────────
+async function checkHealth() {
+  try {
+    const res = await fetch(`${API_BASE}/api/health`);
+    const data = await res.json();
+    // Update model status indicator if element exists in your HTML
+    const statusEl = document.getElementById('model-status');
+    if (statusEl) statusEl.textContent = data.pdfs_loaded > 0 ? 'ONLINE' : 'NO PDF';
+  } catch(e) {
+    console.error('Health check failed:', e);
+  }
+}
+
+// ── SEND QUERY ────────────────────────────────────────────────
+async function sendQuery(question) {
+  // Read hyperparameter values from DOM controls — adapt IDs to match your HTML
+  // Fallbacks applied, value or textContent depending if they are spans
+  const getVal = (id, fallback) => {
+      const el = document.getElementById(id);
+      if(!el) return fallback;
+      return el.value || el.textContent || fallback;
+  };
+  
+  const params = {
+    question,
+    chunk_size:    parseInt(getVal('ctrl-chunk-size', 600)),
+    chunk_overlap: parseInt(getVal('ctrl-chunk-overlap', 80)),
+    temperature:   parseFloat(getVal('ctrl-temperature', 0.2)),
+    top_k:         parseInt(getVal('ctrl-top-k', 4)),
+  };
+
+  // Show thinking state — adapt selector to match your HTML's loading element
+  const thinkingEl = document.getElementById('thinking-indicator');
+  if (thinkingEl) thinkingEl.style.display = 'flex';
+
+  try {
+    const res = await fetch(`${API_BASE}/api/query`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(params)
+    });
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+
+    // Hide thinking state
+    if (thinkingEl) thinkingEl.style.display = 'none';
+
+    // Render bot message — adapt to your HTML's message rendering function
+    appendMessage('bot', data.answer);
+
+    // Populate retrieval context panel if it exists
+    renderChunks(data.chunks_retrieved);
+
+    // Update "parameters used" display
+    updateParamsUsed(data.params_used);
+
+  } catch(err) {
+    if (thinkingEl) thinkingEl.style.display = 'none';
+    appendMessage('error', `[ ERROR ] ${err.message}`);
+  }
+}
+
+// ── RENDER CHUNKS (right panel) ───────────────────────────────
+function renderChunks(chunks) {
+  const container = document.getElementById('chunks-container');
+  if (!container || !chunks?.length) return;
+  container.innerHTML = chunks.map((c, i) => `
+    <div class="bg-[#0a0a0a] border border-zinc-800 p-4">
+      <div class="flex justify-between items-center mb-2">
+        <span class="text-[10px] font-mono text-white">CHUNK 0${i+1} / 0${chunks.length}</span>
+        <span class="text-[10px] font-mono text-zinc-500">SCORE ${(c.score ?? 0).toFixed(2)}</span>
+      </div>
+      <p class="text-[12px] font-sans text-zinc-400 leading-relaxed mb-3">${c.text?.slice(0, 200) ?? ''}...</p>
+      <div class="text-[9px] font-mono text-zinc-600 border-t border-zinc-900 pt-2 uppercase">${c.source ?? 'FIA REGULATIONS 2024'}</div>
+    </div>
+  `).join('');
+}
+
+// ── UPDATE PARAMS DISPLAY ─────────────────────────────────────
+function updateParamsUsed(params) {
+  const el = document.getElementById('params-used-display');
+  if (!el || !params) return;
+  el.innerHTML = `
+    CHUNK ${params.chunk_size} &nbsp;|&nbsp;
+    OVERLAP ${params.chunk_overlap} &nbsp;|&nbsp;
+    TEMP ${params.temperature} &nbsp;|&nbsp;
+    TOP K ${params.top_k}
+  `;
+}
+
+// ── MESSAGE RENDERER ──────────────────────────────────────────
+function appendMessage(role, content) {
+  const log = document.getElementById('chat-log');
+  if (!log) return;
+
+  const wrapper = document.createElement('div');
+  const isUser = role === 'user';
+  wrapper.className = `flex flex-col ${isUser ? 'items-end' : 'items-start'} gap-1`;
+
+  const time = new Date().toLocaleTimeString('en-GB', {
+    hour: '2-digit', minute: '2-digit', second: '2-digit'
+  });
+
+  const styleClass = isUser ? 'bg-white text-black p-4 max-w-[80%] text-sm font-sans leading-relaxed' : 'bg-zinc-900 text-white p-4 max-w-[85%] border border-zinc-800 text-sm font-sans leading-relaxed';
+  const label = isUser ? `USER — ${time}` : `PHI3 — ${time}`;
+
+  wrapper.innerHTML = `
+    <div class="${styleClass}">${content}</div>
+    <span class="text-[10px] font-mono text-zinc-500 uppercase">${label}</span>
+  `;
+
+  log.appendChild(wrapper);
+  log.scrollTop = log.scrollHeight;
+
+  // Hide empty state if visible
+  const emptyState = document.getElementById('empty-state');
+  if (emptyState) emptyState.style.display = 'none';
+}
+
+// ── WIRE SEND BUTTON AND INPUT ────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  checkHealth();
+
+  // Load the actual best chunking parameters on init
+  function applyParams(best_params) {
+    if(!best_params || best_params.chunk_size == null) return;
+    document.getElementById('ctrl-chunk-size').textContent = best_params.chunk_size;
+    document.getElementById('ctrl-chunk-overlap').textContent = best_params.chunk_overlap;
+    document.getElementById('ctrl-temperature').textContent = best_params.temperature;
+    document.getElementById('ctrl-top-k').textContent = best_params.top_k;
+    // Only update params-used if it hasn't mapped a query yet, or just update the HUD bounds!
+  }
+
+  fetch('/api/benchmark/state')
+    .then(r => r.json())
+    .then(data => {
+      applyParams(data.best_params);
+      updateParamsUsed(data.best_params); // initial display
+    })
+    .catch(e => console.log('Failed to fetch best params:', e));
+
+  // Live update the stats if a benchmark is currently running in background
+  function connectLiveStats() {
+    const ws = new WebSocket(`ws://${window.location.host}/api/ws/benchmark`);
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === 'update' || data.type === 'complete') {
+        if(data.best_params) applyParams(data.best_params);
+      }
+    };
+    ws.onclose = () => setTimeout(connectLiveStats, 2000);
+  }
+  connectLiveStats();
+
+  const input  = document.getElementById('chat-input');
+  const button = document.getElementById('send-btn');
+
+  function handleSend() {
+    const q = input?.value?.trim();
+    if (!q) return;
+    appendMessage('user', q);
+    if(input) input.value = '';
+    sendQuery(q);
+  }
+
+  button?.addEventListener('click', handleSend);
+  input?.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  });
+
+  document.querySelectorAll('[data-example-query]').forEach(pill => {
+    pill.addEventListener('click', () => {
+      if (input) input.value = pill.dataset.exampleQuery;
+      input?.focus();
+    });
+  });
+});
+</script>
+
+</body></html>

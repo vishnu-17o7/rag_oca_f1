@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+websockets
+python-multipart
+langchain
+langchain-community
+langchain-chroma
+chromadb
+sentence-transformers
+ollama
+pypdf
+numpy
+matplotlib
+pandas

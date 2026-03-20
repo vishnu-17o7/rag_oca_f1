@@ -1,0 +1,34 @@
+[
+  {
+    "question": "What is the minimum weight of the car including the driver?",
+    "answer": "The minimum weight of the car including the driver and with the car in its race trim is 798 kg."
+  },
+  {
+    "question": "How many engines is each driver allowed per season?",
+    "answer": "Each driver is permitted to use no more than 4 engines during a championship season."
+  },
+  {
+    "question": "What is the penalty for using an additional power unit element?",
+    "answer": "A grid penalty of 10 places is applied for each additional power unit element used beyond the allocation."
+  },
+  {
+    "question": "What is the maximum race distance in kilometres?",
+    "answer": "The maximum race distance is 305 kilometres, except Monaco which is 260 kilometres."
+  },
+  {
+    "question": "How long before the race must the starting grid be published?",
+    "answer": "The provisional starting grid must be published no later than 4 hours before the race start."
+  },
+  {
+    "question": "What are the conditions under which a Safety Car can be deployed?",
+    "answer": "The Safety Car may be deployed when competitors or officials are in danger, or when a serious accident has occurred, signalled by illuminating orange lights."
+  },
+  {
+    "question": "What is the minimum tyre pressure requirement during a race?",
+    "answer": "Minimum tyre pressures are set by Pirelli and communicated to teams via the official FIA tyre supplier technical directives before each event."
+  },
+  {
+    "question": "How many DRS zones are typically present on a circuit?",
+    "answer": "The number of DRS activation zones varies by circuit and is defined in the event-specific Appendix to the Sporting Regulations, typically between 1 and 3 zones."
+  }
+]
