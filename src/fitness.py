@@ -5,7 +5,8 @@ Evaluates configurations using Semantic Similarity against Gold Standard Q&A
 
 import json
 import os
-from typing import Dict, Tuple
+import shutil
+from typing import Dict, Optional, Tuple
 
 from sentence_transformers import SentenceTransformer, util
 
@@ -16,12 +17,59 @@ _model = SentenceTransformer("all-MiniLM-L6-v2")
 # Load gold standard Q&A pairs
 _project_root = os.path.dirname(os.path.dirname(__file__))
 _gold_path = os.path.join(_project_root, "src", "gold_standard.json")
+_chroma_root = os.path.join(_project_root, "chroma_db")
 
 with open(_gold_path, "r") as f:
     GOLD_STANDARD = json.load(f)
 
 # Cache for evaluated configurations (saves LLM calls)
 _evaluation_cache: Dict[Tuple, float] = {}
+_last_persist_dir: Optional[str] = None
+
+
+def _get_persist_dir(chunk_size: int, chunk_overlap: int) -> str:
+    return os.path.join(_chroma_root, f"db_{chunk_size}_{chunk_overlap}")
+
+
+def _cleanup_previous_persist_dir(current_persist_dir: str) -> None:
+    """Keep only the active iteration's persisted vector store directory."""
+    global _last_persist_dir
+
+    current_abs = os.path.abspath(current_persist_dir)
+    chroma_root_abs = os.path.abspath(_chroma_root)
+
+    if _last_persist_dir is None:
+        if os.path.isdir(chroma_root_abs):
+            for entry in os.listdir(chroma_root_abs):
+                candidate = os.path.join(chroma_root_abs, entry)
+                candidate_abs = os.path.abspath(candidate)
+                if (
+                    entry.startswith("db_")
+                    and os.path.isdir(candidate_abs)
+                    and candidate_abs != current_abs
+                ):
+                    try:
+                        shutil.rmtree(candidate_abs)
+                        print(f"[CLEANUP] Removed stale vector store: {candidate_abs}")
+                    except Exception as exc:
+                        print(f"[WARN] Could not remove stale vector store '{candidate_abs}': {exc}")
+        _last_persist_dir = current_abs
+        return
+
+    previous_abs = os.path.abspath(_last_persist_dir)
+
+    if (
+        previous_abs != current_abs
+        and previous_abs.startswith(chroma_root_abs)
+        and os.path.isdir(previous_abs)
+    ):
+        try:
+            shutil.rmtree(previous_abs)
+            print(f"[CLEANUP] Removed previous vector store: {previous_abs}")
+        except Exception as exc:
+            print(f"[WARN] Could not remove previous vector store '{previous_abs}': {exc}")
+
+    _last_persist_dir = current_abs
 
 
 def fitness_function(params: list) -> float:
@@ -44,6 +92,9 @@ def fitness_function(params: list) -> float:
     if chunk_overlap >= chunk_size:
         print(f"[PENALTY] chunk_overlap ({chunk_overlap}) >= chunk_size ({chunk_size})")
         return 0.0
+
+    persist_dir = _get_persist_dir(chunk_size, chunk_overlap)
+    _cleanup_previous_persist_dir(persist_dir)
 
     # Create cache key (round temperature to 2 decimals for caching)
     cache_key = (chunk_size, chunk_overlap, round(temperature, 2), top_k)

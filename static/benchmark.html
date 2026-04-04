@@ -7,7 +7,6 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=IBM+Plex+Mono:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -76,7 +75,7 @@
 </head>
 <body class="flex flex-col min-h-screen">
 <!-- TOP APP BAR (ZONE 1) -->
-<header class="bg-black text-white docked full-width top-0 border-b-[1px] border-zinc-800 focus-within:border-white flex justify-between items-center w-full px-4 h-12 z-50">
+<header id="section-status" class="bg-black text-white docked full-width top-0 border-b-[1px] border-zinc-800 focus-within:border-white flex justify-between items-center w-full px-4 h-12 z-50">
 <div class="flex items-center gap-6">
 <span class="text-sm font-bold tracking-[0.2em] text-white font-mono">F1 REG / BENCH</span>
 <div class="h-4 w-[1px] bg-zinc-800"></div>
@@ -84,65 +83,66 @@
 </div>
 <div class="flex items-center gap-8">
 <div class="flex items-center gap-2">
-<span class="w-2 h-2 bg-white animate-pulse-lite" id="run-status-icon"></span>
-<span id="run-status-badge" class="mono-label text-white">[ RUNNING ]</span>
+<span class="w-2 h-2 bg-white animate-pulse-lite" id="run-status-icon" style="display:none;"></span>
+<span id="run-status-badge" class="mono-label text-white">[ IDLE ]</span>
 </div>
 <div class="flex flex-col items-end">
 <span class="mono-label text-[10px] text-zinc-500">BUDGET</span>
-<span id="budget-counter" class="mono-data text-xs">23 / 50 CALLS USED</span>
+<span id="budget-counter" class="mono-data text-xs">0 / 100 CALLS USED</span>
 </div>
 <div class="flex flex-col items-end">
 <span class="mono-label text-[10px] text-zinc-500">ELAPSED</span>
-<span id="elapsed-timer" class="mono-data text-xs">04:32</span>
+<span id="elapsed-timer" class="mono-data text-xs">00:00</span>
 </div>
 <div class="flex gap-4 ml-4">
 <button id="start-run-btn" class="material-symbols-outlined text-white text-sm hover:text-green-400">play_arrow</button>
 <button id="stop-run-btn" class="material-symbols-outlined text-zinc-500 text-sm hover:text-red-400" style="display:none;">stop</button>
-<span class="material-symbols-outlined text-zinc-500 text-sm">settings</span>
+<button id="settings-budget-btn" class="material-symbols-outlined text-zinc-500 text-sm hover:text-white" title="Set iterations">settings</button>
+<button id="refresh-state-btn" class="material-symbols-outlined text-zinc-500 text-sm hover:text-white" title="Refresh state">sync</button>
 </div>
 </div>
 </header>
-<main class="flex-1 flex flex-col p-4 gap-4 overflow-hidden">
+<main class="flex-1 flex flex-col p-4 gap-4 overflow-y-auto pb-20">
 <!-- KPI ROW (ZONE 2) -->
-<section class="grid grid-cols-6 gap-4">
+<section id="section-kpi-core" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
 <!-- BEST FITNESS -->
 <div class="bg-surface-container-low brutalist-border p-4 relative flex flex-col justify-between h-24">
 <span class="mono-label text-zinc-500">BEST FITNESS</span>
-<span id="kpi-best-fitness" class="mono-data text-2xl font-bold">0.847</span>
+<span id="kpi-best-fitness" class="mono-data text-2xl font-bold">--</span>
 <div class="absolute bottom-0 left-0 w-full h-[2px] bg-zinc-800">
-<div id="fitness-progress-bar" class="h-full bg-white" style="width: 84.7%"></div>
+<div id="fitness-progress-bar" class="h-full bg-white" style="width: 0%"></div>
 </div>
 </div>
 <!-- CURRENT ITER -->
 <div class="bg-surface-container-low brutalist-border p-4 flex flex-col justify-between h-24">
 <span class="mono-label text-zinc-500">CURRENT ITER</span>
-<span id="kpi-current-iter" class="mono-data text-2xl font-bold">23/50</span>
+<span id="kpi-current-iter" class="mono-data text-2xl font-bold">0 / 100</span>
 </div>
 <!-- AVG FITNESS -->
 <div class="bg-surface-container-low brutalist-border p-4 flex flex-col justify-between h-24">
 <span class="mono-label text-zinc-500">AVG FITNESS</span>
-<span id="kpi-avg-fitness" class="mono-data text-2xl font-bold text-zinc-400">0.612</span>
+<span id="kpi-avg-fitness" class="mono-data text-2xl font-bold text-zinc-400">--</span>
 </div>
 <!-- BEST CHUNK SIZE -->
 <div class="bg-surface-container-low brutalist-border p-4 flex flex-col justify-between h-24">
 <span class="mono-label text-zinc-500">BEST CHUNK SIZE</span>
-<span id="kpi-best-chunk" class="mono-data text-2xl font-bold">650</span>
+<span id="kpi-best-chunk" class="mono-data text-2xl font-bold">--</span>
 </div>
 <!-- BEST TEMPERATURE -->
 <div class="bg-surface-container-low brutalist-border p-4 flex flex-col justify-between h-24">
 <span class="mono-label text-zinc-500">BEST TEMP</span>
-<span id="kpi-best-temp" class="mono-data text-2xl font-bold">0.18</span>
+<span id="kpi-best-temp" class="mono-data text-2xl font-bold">--</span>
 </div>
 <!-- INVALID CONFIGS -->
 <div class="bg-surface-container-low brutalist-border p-4 flex flex-col justify-between h-24">
 <span class="mono-label text-zinc-500">INVALID CONFIGS</span>
-<span id="kpi-invalid" class="mono-data text-2xl font-bold text-[#ff4444]">4</span>
+<span id="kpi-invalid" class="mono-data text-2xl font-bold text-[#ff4444]">0</span>
 </div>
 </section>
 <!-- MAIN GRIDS (ZONE 3) -->
-<section class="flex-1 grid grid-cols-12 gap-4 min-h-0">
+<section id="section-analytics" class="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-4 min-h-0">
 <!-- LEFT: CONVERGENCE -->
-<div class="col-span-4 bg-surface-container-low brutalist-border flex flex-col p-4">
+<div class="xl:col-span-4 bg-surface-container-low brutalist-border flex flex-col p-4 min-h-[260px]">
 <div class="flex justify-between items-center mb-6">
 <span class="mono-label">CONVERGENCE OVER ITERATIONS</span>
 <div class="flex gap-4">
@@ -171,13 +171,13 @@
 <rect id="chart-pulsing-head" class="animate-pulse" fill="white" height="2" width="2" x="69" y="39"></rect>
 </svg>
 <!-- Axes -->
-<div class="absolute bottom-[-20px] left-0 w-full flex justify-between mono-label text-[9px] text-zinc-600">
+<div id="convergence-x-axis" class="absolute bottom-[-20px] left-0 w-full flex justify-between mono-label text-[9px] text-zinc-600">
 <span>0</span><span>12</span><span>25</span><span>37</span><span>50</span>
 </div>
 </div>
 </div>
 <!-- MIDDLE: SCATTER -->
-<div class="col-span-4 bg-surface-container-low brutalist-border flex flex-col p-4">
+<div class="xl:col-span-4 bg-surface-container-low brutalist-border flex flex-col p-4 min-h-[260px]">
 <div class="flex justify-between items-center mb-6">
 <span class="mono-label">PARAMETER SPACE EXPLORED</span>
 <div class="flex gap-2">
@@ -187,27 +187,14 @@
 </div>
 </div>
 <div id="scatter-chart" class="flex-1 relative border-l border-b border-zinc-800">
-<!-- Scatter Markers -->
-<div class="absolute top-1/4 left-1/3 w-1.5 h-1.5 bg-white opacity-20"></div>
-<div class="absolute top-1/2 left-1/4 w-1.5 h-1.5 bg-white opacity-40"></div>
-<div class="absolute top-3/4 left-1/2 w-1.5 h-1.5 bg-white opacity-10"></div>
-<div class="absolute top-1/3 left-2/3 w-1.5 h-1.5 bg-white opacity-60"></div>
-<div class="absolute top-2/3 left-1/5 w-1.5 h-1.5 bg-white opacity-30"></div>
-<div class="absolute top-1/2 left-3/4 w-1.5 h-1.5 bg-white opacity-50"></div>
-<div class="absolute top-1/4 left-1/2 w-1.5 h-1.5 bg-white opacity-20"></div>
-<div class="absolute top-1/6 left-2/5 w-1.5 h-1.5 bg-white opacity-40"></div>
-<!-- Best Highlight -->
-<div class="absolute top-[40%] left-[65%] flex items-center justify-center">
-<div class="w-3 h-3 border border-white"></div>
-<div class="absolute w-1 h-1 bg-white"></div>
-</div>
+<div class="absolute inset-0 flex items-center justify-center mono-label text-[9px] text-zinc-600">WAITING FOR ITERATIONS</div>
 <!-- Labels -->
 <div class="absolute -left-8 top-1/2 -rotate-90 mono-label text-[8px] text-zinc-600">FITNESS</div>
 <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 mono-label text-[8px] text-zinc-600">CHUNK_SIZE</div>
 </div>
 </div>
 <!-- RIGHT: LOG -->
-<div class="col-span-4 bg-surface-container-low brutalist-border flex flex-col overflow-hidden">
+<div id="section-log-deep" class="xl:col-span-4 bg-surface-container-low brutalist-border flex flex-col overflow-hidden min-h-[260px]">
 <div class="p-4 border-b border-zinc-800">
 <span class="mono-label">ITERATION LOG</span>
 </div>
@@ -222,41 +209,11 @@
 </tr>
 </thead>
 <tbody id="iteration-log-body">
-<tr class="bg-zinc-900/50 border-l-[2px] border-white">
-<td class="p-2 text-white">023</td>
-<td class="p-2 text-white">0.8471</td>
-<td class="p-2">0.18</td>
-<td class="p-2 text-white font-bold">OPTIMAL</td>
-</tr>
 <tr class="bg-black">
-<td class="p-2 text-zinc-500">022</td>
-<td class="p-2 text-zinc-500">0.7122</td>
-<td class="p-2 text-zinc-500">0.22</td>
-<td class="p-2 text-zinc-600">VALID</td>
-</tr>
-<tr class="bg-zinc-900/30">
-<td class="p-2 text-zinc-500">021</td>
-<td class="p-2 text-[#ff4444]">----</td>
-<td class="p-2 text-zinc-500">0.25</td>
-<td class="p-2 text-[#ff4444]">FAILED</td>
-</tr>
-<tr class="bg-black">
-<td class="p-2 text-zinc-500">020</td>
-<td class="p-2 text-zinc-500">0.6901</td>
-<td class="p-2 text-zinc-500">0.28</td>
-<td class="p-2 text-zinc-600">VALID</td>
-</tr>
-<tr class="bg-zinc-900/30">
-<td class="p-2 text-zinc-500">019</td>
-<td class="p-2 text-zinc-500">0.6884</td>
-<td class="p-2 text-zinc-500">0.31</td>
-<td class="p-2 text-zinc-600">VALID</td>
-</tr>
-<tr class="bg-black">
-<td class="p-2 text-zinc-500">018</td>
-<td class="p-2 text-zinc-500">0.6550</td>
-<td class="p-2 text-zinc-500">0.35</td>
-<td class="p-2 text-zinc-600">VALID</td>
+<td class="p-2 text-zinc-600">---</td>
+<td class="p-2 text-zinc-600">----</td>
+<td class="p-2 text-zinc-600">--</td>
+<td class="p-2 text-zinc-600">WAITING</td>
 </tr>
 </tbody>
 </table>
@@ -265,305 +222,571 @@
 </section>
 </main>
 <!-- BOTTOM BAR (ZONE 4) -->
-<footer class="bg-black h-16 border-t border-zinc-800 flex items-stretch">
-<div class="flex-1 brutalist-border border-y-0 flex items-center px-6 gap-4">
+<footer class="bg-black min-h-16 border-t border-zinc-800 flex flex-col lg:flex-row items-stretch">
+<div class="flex-1 brutalist-border border-y-0 flex items-center px-6 gap-4 py-3 lg:py-0">
 <span class="mono-label text-zinc-500 text-[10px]">CURRENT CANDIDATE</span>
-<span class="mono-data text-xs text-white">CHUNK: <span id="current-chunk">720</span> | OVER: <span id="current-overlap">80</span> | TEMP: <span id="current-temp">0.12</span> | TOP: <span id="current-topk">4</span></span>
+<span class="mono-data text-xs text-white">CHUNK: <span id="current-chunk">--</span> | OVER: <span id="current-overlap">--</span> | TEMP: <span id="current-temp">--</span> | TOP: <span id="current-topk">--</span></span>
 </div>
-<div class="flex-1 brutalist-border border-y-0 border-x-0 flex items-center px-6 gap-4 bg-zinc-900">
+<div class="flex-1 brutalist-border border-y-0 border-x-0 flex items-center px-6 gap-4 bg-zinc-900 py-3 lg:py-0">
 <span class="mono-label text-white text-[10px]">BEST CONFIGURATION</span>
-<span class="mono-data text-xs text-white font-bold">CHUNK: <span id="best-chunk">650</span> | OVER: <span id="best-overlap">80</span> | TEMP: <span id="best-temp">0.18</span> | TOP: <span id="best-topk">4</span></span>
+<span class="mono-data text-xs text-white font-bold">CHUNK: <span id="best-chunk">--</span> | OVER: <span id="best-overlap">--</span> | TEMP: <span id="best-temp">--</span> | TOP: <span id="best-topk">--</span></span>
 </div>
-<div class="w-64 flex flex-col justify-center px-6 border-l border-zinc-800">
+<div class="w-full lg:w-64 flex flex-col justify-center px-6 border-l border-zinc-800 py-3 lg:py-0">
 <span class="mono-label text-zinc-500 text-[9px]">ESTIMATED COMPLETION</span>
-<span id="eta-display" class="mono-data text-white font-bold">08:15 MIN</span>
-<div id="remaining-calls" class="mono-label text-zinc-500 text-[9px]"></div>
+<span id="eta-display" class="mono-data text-white font-bold">--:-- MIN</span>
+<div id="remaining-calls" class="mono-label text-zinc-500 text-[9px]">--</div>
 </div>
 </footer>
 <!-- NAVIGATION SHELL (BOTTOM BAR FROM JSON AS TEMPLATE) -->
 <nav class="fixed bottom-0 left-0 w-full h-16 flex justify-start items-stretch bg-black z-[60] border-t border-zinc-800">
 <!-- Mapping labels from JSON: ["STATUS", "KPI_CORE", "ANALYTICS", "LOG_DEEP"] -->
-<div class="flex flex-col items-center justify-center text-white bg-zinc-900 border-x-[1px] border-white h-full px-6 transition-none cursor-pointer">
+<button data-nav-target="section-status" class="bench-nav-btn flex flex-col items-center justify-center text-white bg-zinc-900 border-x-[1px] border-white h-full px-6 transition-none" type="button">
 <span class="material-symbols-outlined mb-1">terminal</span>
 <span class="mono-label text-[10px]">STATUS</span>
-</div>
-<div class="flex flex-col items-center justify-center text-zinc-500 px-6 hover:text-white hover:bg-zinc-950 transition-none cursor-pointer">
+</button>
+<button data-nav-target="section-kpi-core" class="bench-nav-btn flex flex-col items-center justify-center text-zinc-500 px-6 hover:text-white hover:bg-zinc-950 transition-none" type="button">
 <span class="material-symbols-outlined mb-1">query_stats</span>
 <span class="mono-label text-[10px]">KPI_CORE</span>
-</div>
-<div class="flex flex-col items-center justify-center text-zinc-500 px-6 hover:text-white hover:bg-zinc-950 transition-none cursor-pointer">
+</button>
+<button data-nav-target="section-analytics" class="bench-nav-btn flex flex-col items-center justify-center text-zinc-500 px-6 hover:text-white hover:bg-zinc-950 transition-none" type="button">
 <span class="material-symbols-outlined mb-1">monitoring</span>
 <span class="mono-label text-[10px]">ANALYTICS</span>
-</div>
-<div class="flex flex-col items-center justify-center text-zinc-500 px-6 hover:text-white hover:bg-zinc-950 transition-none cursor-pointer">
+</button>
+<button data-nav-target="section-log-deep" class="bench-nav-btn flex flex-col items-center justify-center text-zinc-500 px-6 hover:text-white hover:bg-zinc-950 transition-none" type="button">
 <span class="material-symbols-outlined mb-1">database</span>
 <span class="mono-label text-[10px]">LOG_DEEP</span>
-</div>
+</button>
 </nav>
 <!-- Overlay content to push main body up because of fixed nav -->
 <div class="h-16"></div>
 
 <script>
 const API_BASE = window.location.origin;
+const DEFAULT_BUDGET = 100;
+const MIN_BUDGET = 1;
+const MAX_BUDGET = 1000;
+const MAX_LOG_ROWS = 12;
+const AXIS_MAX = {
+  chunk_size: 1000,
+  chunk_overlap: 200,
+  temperature: 1.0,
+};
+const AXIS_LABELS = {
+  chunk_size: 'CHUNK_SIZE',
+  chunk_overlap: 'CHUNK_OVERLAP',
+  temperature: 'TEMPERATURE',
+};
+
 let ws = null;
-let startTime = null;
-let timerInterval = null;
+let wsReconnectAttempts = 0;
+let wsReconnectTimer = null;
+let elapsedTimerInterval = null;
+let elapsedBaseSeconds = 0;
+let elapsedBaseTimestamp = Date.now();
+let activeScatterAxis = 'chunk_size';
+let lastBenchmarkData = null;
+let selectedBudget = DEFAULT_BUDGET;
 
-// ── WEBSOCKET CONNECTION ──────────────────────────────────────
+function clamp(value, minValue, maxValue) {
+  return Math.min(maxValue, Math.max(minValue, value));
+}
+
+function asNumber(value, fallback = 0) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+function normalizeBudget(value, fallback = DEFAULT_BUDGET) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return fallback;
+  return clamp(Math.round(parsed), MIN_BUDGET, MAX_BUDGET);
+}
+
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value;
+}
+
+function formatClock(totalSeconds) {
+  const safeSeconds = Math.max(0, asNumber(totalSeconds, 0));
+  const mm = String(Math.floor(safeSeconds / 60)).padStart(2, '0');
+  const ss = String(safeSeconds % 60).padStart(2, '0');
+  return `${mm}:${ss}`;
+}
+
+function getWebSocketUrl() {
+  const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+  return `${protocol}://${window.location.host}/api/ws/benchmark`;
+}
+
+function renderElapsedTimer() {
+  const elapsed = elapsedBaseSeconds + Math.floor((Date.now() - elapsedBaseTimestamp) / 1000);
+  setText('elapsed-timer', formatClock(elapsed));
+}
+
+function setElapsedBase(seconds, isRunning) {
+  elapsedBaseSeconds = Math.max(0, asNumber(seconds, 0));
+  elapsedBaseTimestamp = Date.now();
+
+  if (elapsedTimerInterval) {
+    clearInterval(elapsedTimerInterval);
+    elapsedTimerInterval = null;
+  }
+
+  renderElapsedTimer();
+  if (isRunning) {
+    elapsedTimerInterval = setInterval(renderElapsedTimer, 1000);
+  }
+}
+
+function scheduleWebSocketReconnect() {
+  if (wsReconnectTimer) return;
+
+  const delayMs = Math.min(10000, 1000 * (2 ** wsReconnectAttempts));
+  wsReconnectAttempts += 1;
+
+  wsReconnectTimer = setTimeout(() => {
+    wsReconnectTimer = null;
+    connectWebSocket();
+  }, delayMs);
+}
+
 function connectWebSocket() {
-  const wsUrl = `ws://${window.location.host}/api/ws/benchmark`;
-  ws = new WebSocket(wsUrl);
+  if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
+    return;
+  }
 
-  ws.onopen = () => console.log('[WS] Connected to benchmark stream');
+  ws = new WebSocket(getWebSocketUrl());
+
+  ws.onopen = () => {
+    wsReconnectAttempts = 0;
+    if (wsReconnectTimer) {
+      clearTimeout(wsReconnectTimer);
+      wsReconnectTimer = null;
+    }
+    fetchBenchmarkState();
+  };
 
   ws.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    if (data.type === 'update' || data.type === 'complete') {
-      updateAllUI(data);
+    try {
+      const data = JSON.parse(event.data);
+      if (data && (data.type === 'update' || data.type === 'complete')) {
+        updateAllUI(data);
+      }
+    } catch (err) {
+      console.error('[WS] Invalid benchmark payload:', err);
     }
   };
 
   ws.onclose = () => {
-    console.log('[WS] Disconnected — retrying in 2s');
-    setTimeout(connectWebSocket, 2000);
+    ws = null;
+    scheduleWebSocketReconnect();
   };
 
-  ws.onerror = (err) => console.error('[WS] Error:', err);
+  ws.onerror = (err) => {
+    console.error('[WS] Benchmark socket error:', err);
+  };
 }
 
-// ── START RUN ─────────────────────────────────────────────────
-function startRun() {
-  if (!ws || ws.readyState !== WebSocket.OPEN) return;
-  startTime = Date.now();
-  timerInterval = setInterval(updateTimer, 1000);
-  ws.send(JSON.stringify({ action: 'start', budget: 50 }));
-  setRunningState(true);
-}
-
-function stopRun() {
-  if (ws?.readyState === WebSocket.OPEN) {
-    ws.send(JSON.stringify({ action: 'stop' }));
+function sendWs(payload) {
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify(payload));
+    return true;
   }
-  setRunningState(false);
-  clearInterval(timerInterval);
+  return false;
 }
 
-// ── TIMER ─────────────────────────────────────────────────────
-function updateTimer() {
-  const elapsed = Math.floor((Date.now() - startTime) / 1000);
-  const mm = String(Math.floor(elapsed / 60)).padStart(2, '0');
-  const ss = String(elapsed % 60).padStart(2, '0');
-  const el = document.getElementById('elapsed-timer');
-  if (el) el.textContent = `${mm}:${ss}`;
+async function fetchBenchmarkState() {
+  try {
+    const response = await fetch(`${API_BASE}/api/benchmark/state`);
+    if (!response.ok) return;
+    const data = await response.json();
+    updateAllUI(data);
+  } catch (err) {
+    console.error('[HTTP] Failed to load benchmark state:', err);
+  }
 }
 
-// ── MASTER UI UPDATER ─────────────────────────────────────────
+function deriveRunLabel(data) {
+  if (data?.is_running) return 'RUNNING';
+  const currentIter = asNumber(data?.current_iter, 0);
+  const totalBudget = asNumber(data?.total_budget, 0);
+  if (currentIter === 0) return 'IDLE';
+  if (totalBudget > 0 && currentIter >= totalBudget) return 'COMPLETE';
+  return 'STOPPED';
+}
+
+async function startRun() {
+  const budget = normalizeBudget(selectedBudget, DEFAULT_BUDGET);
+  const sent = sendWs({ action: 'start', budget });
+  if (!sent) {
+    try {
+      await fetch(`${API_BASE}/api/benchmark/start?budget=${encodeURIComponent(budget)}`, { method: 'POST' });
+    } catch (err) {
+      console.error('[HTTP] Failed to start benchmark:', err);
+    }
+  }
+
+  setText('kpi-current-iter', `0 / ${budget}`);
+  updateConvergenceAxis(budget);
+  updateBudgetCounter({ current_iter: 0, total_budget: budget, cache_hits: 0 });
+  setRunningState(true, 'RUNNING');
+  setElapsedBase(lastBenchmarkData?.elapsed_seconds ?? 0, true);
+}
+
+function promptIterations() {
+  const current = normalizeBudget(selectedBudget, DEFAULT_BUDGET);
+  const response = window.prompt(
+    `Set max iterations (${MIN_BUDGET}-${MAX_BUDGET}):`,
+    String(current)
+  );
+
+  if (response === null) return;
+
+  const parsed = Number(response);
+  if (!Number.isFinite(parsed)) {
+    window.alert('Please enter a valid number of iterations.');
+    return;
+  }
+
+  selectedBudget = normalizeBudget(parsed, current);
+
+  if (!lastBenchmarkData?.is_running) {
+    setText('kpi-current-iter', `0 / ${selectedBudget}`);
+    updateConvergenceAxis(selectedBudget);
+    updateBudgetCounter({ current_iter: 0, total_budget: selectedBudget, cache_hits: 0 });
+  }
+}
+
+async function stopRun() {
+  const sent = sendWs({ action: 'stop' });
+  if (!sent) {
+    try {
+      await fetch(`${API_BASE}/api/benchmark/stop`, { method: 'POST' });
+    } catch (err) {
+      console.error('[HTTP] Failed to stop benchmark:', err);
+    }
+  }
+
+  setRunningState(false, 'STOPPED');
+}
+
 function updateAllUI(data) {
+  if (!data) return;
+  const incomingBudget = normalizeBudget(data.total_budget, selectedBudget);
+  if (data.is_running || !lastBenchmarkData) {
+    selectedBudget = incomingBudget;
+  }
+
+  lastBenchmarkData = data;
+
   updateKPIs(data);
   updateBudgetCounter(data);
-  updateIterationLog(data.history);
-  updateConvergenceChart(data.history);
-  updateScatterPlot(data.history);
+  updateIterationLog(data.history || []);
+  updateConvergenceAxis(data.total_budget);
+  updateConvergenceChart(data.history || [], data.total_budget);
+  updateScatterPlot(data.history || []);
   updateBottomBar(data);
-  if (!data.is_running) {
-    setRunningState(false);
-    clearInterval(timerInterval);
+
+  setElapsedBase(asNumber(data.elapsed_seconds, 0), !!data.is_running);
+  setRunningState(!!data.is_running, deriveRunLabel(data));
+}
+
+function updateKPIs(data) {
+  const history = data.history || [];
+  const hasHistory = history.length > 0;
+  const bestFitness = hasHistory ? asNumber(data.best_fitness, 0) : null;
+  const avgFitness = hasHistory ? asNumber(data.avg_fitness, 0) : null;
+
+  setText('kpi-best-fitness', bestFitness === null ? '--' : bestFitness.toFixed(3));
+  setText('kpi-current-iter', `${asNumber(data.current_iter, 0)} / ${asNumber(data.total_budget, selectedBudget)}`);
+  setText('kpi-avg-fitness', avgFitness === null ? '--' : avgFitness.toFixed(3));
+  setText('kpi-best-chunk', data.best_params?.chunk_size ?? '--');
+
+  const bestTemp = data.best_params?.temperature;
+  setText('kpi-best-temp', Number.isFinite(Number(bestTemp)) ? asNumber(bestTemp).toFixed(2) : '--');
+
+  setText('kpi-invalid', String(asNumber(data.invalid_count, 0)));
+
+  const bar = document.getElementById('fitness-progress-bar');
+  if (bar) {
+    const width = (bestFitness === null ? 0 : clamp(bestFitness, 0, 1)) * 100;
+    bar.style.width = `${width.toFixed(1)}%`;
   }
 }
 
-// ── KPI CARDS ─────────────────────────────────────────────────
-function updateKPIs(data) {
-  const set = (id, val) => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = val;
-  };
-
-  set('kpi-best-fitness',    data.best_fitness?.toFixed(3)  ?? '--');
-  set('kpi-current-iter',    `${data.current_iter} / ${data.total_budget}`);
-  set('kpi-avg-fitness',     data.avg_fitness?.toFixed(3)   ?? '--');
-  set('kpi-best-chunk',      data.best_params?.chunk_size   ?? '--');
-  set('kpi-best-temp',       data.best_params?.temperature  ?? '--');
-  set('kpi-invalid',         data.invalid_count             ?? 0);
-
-  // Progress bar under best fitness card
-  const bar = document.getElementById('fitness-progress-bar');
-  if (bar) bar.style.width = `${(data.best_fitness ?? 0) * 100}%`;
-}
-
-// ── BUDGET COUNTER ────────────────────────────────────────────
 function updateBudgetCounter(data) {
   const el = document.getElementById('budget-counter');
-  if (el) el.innerHTML =
-    `<span style="color:#fff">${data.current_iter}</span>` +
-    `<span style="color:#444"> / ${data.total_budget} CALLS USED</span>`;
+  if (!el) return;
+
+  const currentIter = asNumber(data.current_iter, 0);
+  const totalBudget = asNumber(data.total_budget, selectedBudget);
+  el.innerHTML =
+    `<span style="color:#fff">${currentIter}</span>` +
+    `<span style="color:#444"> / ${totalBudget} CALLS USED</span>`;
+  el.title = `Cache hits: ${asNumber(data.cache_hits, 0)}`;
 }
 
-// ── ITERATION LOG ─────────────────────────────────────────────
 function updateIterationLog(history) {
   const tbody = document.getElementById('iteration-log-body');
-  if (!tbody || !history?.length) return;
+  if (!tbody) return;
 
-  const rows = [...history].reverse().slice(0, 10);
-  const bestFitness = Math.max(...history.map(h => h.fitness));
+  if (!history.length) {
+    tbody.innerHTML = `
+      <tr class="bg-black">
+        <td class="p-2 text-zinc-600">---</td>
+        <td class="p-2 text-zinc-600">----</td>
+        <td class="p-2 text-zinc-600">--</td>
+        <td class="p-2 text-zinc-600">WAITING</td>
+      </tr>
+    `;
+    return;
+  }
 
-  tbody.innerHTML = rows.map((h, idx) => {
-    const isActive  = idx === 0;
-    const isBest    = h.fitness === bestFitness && h.status !== 'PENALTY';
-    const isPenalty = h.status === 'PENALTY';
+  const validFitnessValues = history
+    .filter((item) => item.status !== 'PENALTY')
+    .map((item) => asNumber(item.fitness, 0));
+  const bestFitness = validFitnessValues.length ? Math.max(...validFitnessValues) : -Infinity;
+  const rows = history.slice(-MAX_LOG_ROWS).reverse();
 
-    const rowStyle  = isActive ? 'background:#111;border-left:1px solid #fff' : '';
-    const fitStyle  = isPenalty ? 'color:#ff4444' : (isBest ? 'color:#fff;font-weight:bold' : 'color:#666');
+  tbody.innerHTML = rows.map((item, idx) => {
+    const isActive = idx === 0;
+    const isPenalty = item.status === 'PENALTY';
+    const fit = asNumber(item.fitness, 0);
+    const isBest = !isPenalty && fit >= bestFitness;
+
+    const statusText = isPenalty ? 'FAILED' : (isBest ? 'OPTIMAL' : 'VALID');
+    const fitnessText = isPenalty ? '----' : fit.toFixed(4);
+
+    let rowBackground = idx % 2 === 0 ? '#000' : '#0d0d0d';
+    let rowBorder = '';
+    if (isActive) {
+      rowBackground = '#111';
+      rowBorder = 'border-left:2px solid #fff;';
+    }
+
+    const fitnessStyle = isPenalty
+      ? 'color:#ff4444'
+      : (isBest ? 'color:#fff;font-weight:700' : 'color:#8a8a8a');
 
     return `
-      <tr style="${rowStyle}">
-        <td class="p-2 text-white">${h.iter}</td>
-        <td class="p-2" style="${fitStyle}">${h.fitness.toFixed(4)}</td>
-        <td class="p-2 text-zinc-500">${h.temperature}</td>
-        <td class="p-2 text-zinc-600">${h.status}</td>
+      <tr style="background:${rowBackground};${rowBorder}">
+        <td class="p-2 text-white">${asNumber(item.iter, 0)}</td>
+        <td class="p-2" style="${fitnessStyle}">${fitnessText}</td>
+        <td class="p-2 text-zinc-500">${asNumber(item.temperature, 0).toFixed(2)}</td>
+        <td class="p-2 ${isPenalty ? 'text-[#ff4444]' : 'text-zinc-500'}">${statusText}</td>
       </tr>
     `;
   }).join('');
 }
 
-// ── CONVERGENCE CHART ─────────────────────────────────────────
-function updateConvergenceChart(history) {
+function updateConvergenceAxis(totalBudget) {
+  const axis = document.getElementById('convergence-x-axis');
+  if (!axis) return;
+
+  const budget = Math.max(1, asNumber(totalBudget, selectedBudget));
+  const ticks = [0, 0.25, 0.5, 0.75, 1].map((ratio) => Math.round(budget * ratio));
+  axis.innerHTML = ticks.map((tick) => `<span>${tick}</span>`).join('');
+}
+
+function updateConvergenceChart(history, totalBudget) {
   const rawLine = document.getElementById('chart-raw-line');
   const bestLine = document.getElementById('chart-best-line');
   const head = document.getElementById('chart-pulsing-head');
-  if (!rawLine || !history?.length) return;
+  if (!rawLine || !bestLine || !head) return;
 
+  if (!history.length) {
+    rawLine.setAttribute('points', '');
+    bestLine.setAttribute('points', '');
+    head.style.display = 'none';
+    return;
+  }
+
+  const budget = Math.max(1, asNumber(totalBudget, history.length));
   let bestSoFar = 0;
   const rawPoints = [];
   const bestPoints = [];
-  
-  // Transform domain: X=(0..50) -> (0..100), Y=(0..1) -> (100..0)
-  history.forEach((h, i) => {
-    if (h.fitness > bestSoFar) bestSoFar = h.fitness;
-    const x = (h.iter / 50) * 100;
-    const ry = 100 - (Math.max(0, Math.min(1, h.fitness)) * 100);
-    const by = 100 - (Math.max(0, Math.min(1, bestSoFar)) * 100);
-    rawPoints.push(`${x},${ry}`);
-    bestPoints.push(`${x},${by}`);
+
+  history.forEach((item) => {
+    const iter = asNumber(item.iter, 0);
+    const fitness = clamp(asNumber(item.fitness, 0), 0, 1);
+    if (item.status !== 'PENALTY') {
+      bestSoFar = Math.max(bestSoFar, fitness);
+    }
+
+    const x = clamp((iter / budget) * 100, 0, 100);
+    const rawY = 100 - (fitness * 100);
+    const bestY = 100 - (bestSoFar * 100);
+
+    rawPoints.push(`${x},${rawY}`);
+    bestPoints.push(`${x},${bestY}`);
   });
 
   rawLine.setAttribute('points', rawPoints.join(' '));
   bestLine.setAttribute('points', bestPoints.join(' '));
-  
-  if (bestPoints.length > 0) {
-    const lastP = bestPoints[bestPoints.length-1].split(',');
-    head.setAttribute('x', parseFloat(lastP[0])-1);
-    head.setAttribute('y', parseFloat(lastP[1])-1);
-  }
+
+  const [lastX, lastY] = bestPoints[bestPoints.length - 1].split(',').map(Number);
+  head.style.display = 'block';
+  head.setAttribute('x', String(lastX - 1));
+  head.setAttribute('y', String(lastY - 1));
 }
 
-// ── SCATTER PLOT ──────────────────────────────────────────────
-let activeScatterAxis = 'chunk_size';
 function updateScatterPlot(history) {
   const container = document.getElementById('scatter-chart');
-  if (!container || !history?.length) return;
+  if (!container) return;
 
-  let html = '';
-  let maxDomain = activeScatterAxis === 'chunk_size' ? 1000 : (activeScatterAxis === 'chunk_overlap' ? 200 : 1.0);
-  
-  history.forEach(h => {
-    const val = h[activeScatterAxis];
-    // Normalize X (0-100%)
-    const x = Math.min(100, Math.max(0, (val / maxDomain) * 100));
-    // Normalize Y (Fitness 0-1) -> 0% is bottom, so 100 - X% from top
-    const y = Math.min(100, Math.max(0, h.fitness * 100));
-    
-    let color = 'rgba(255,255,255,0.1)';
-    if (h.status === 'PENALTY') color = 'rgba(255,68,68,0.3)';
-    else if (h.fitness > 0.8) color = 'rgba(255,255,255,1.0)';
-    else if (h.fitness > 0.6) color = 'rgba(255,255,255,0.5)';
-    else if (h.fitness > 0.4) color = 'rgba(255,255,255,0.25)';
+  if (!history.length) {
+    container.innerHTML = `
+      <div class="absolute inset-0 flex items-center justify-center mono-label text-[9px] text-zinc-600">WAITING FOR ITERATIONS</div>
+      <div class="absolute -left-8 top-1/2 -rotate-90 mono-label text-[8px] text-zinc-600">FITNESS</div>
+      <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 mono-label text-[8px] text-zinc-600">${AXIS_LABELS[activeScatterAxis]}</div>
+    `;
+    return;
+  }
 
-    html += `<div style="position:absolute; bottom:${y}%; left:${x}%; width:6px; height:6px; background-color:${color}; transform:translate(-50%, 50%);"></div>`;
-  });
-  
-  // Clear any previous dots but keep absolute labels if any... Actually I can just replace innerHTML,
-  // but labels need to be kept.
-  const labelsHtml = `
+  const maxDomain = AXIS_MAX[activeScatterAxis] ?? 1;
+  const validFitnessValues = history
+    .filter((item) => item.status !== 'PENALTY')
+    .map((item) => asNumber(item.fitness, 0));
+  const bestFitness = validFitnessValues.length ? Math.max(...validFitnessValues) : -Infinity;
+
+  const dots = history.map((item) => {
+    const value = asNumber(item[activeScatterAxis], 0);
+    const x = clamp((value / maxDomain) * 100, 0, 100);
+    const y = clamp(asNumber(item.fitness, 0), 0, 1) * 100;
+    const isPenalty = item.status === 'PENALTY';
+    const isBest = !isPenalty && asNumber(item.fitness, 0) >= bestFitness;
+
+    let color = 'rgba(255,255,255,0.15)';
+    if (isPenalty) color = 'rgba(255,68,68,0.35)';
+    else if (isBest) color = 'rgba(255,255,255,1.0)';
+    else if (asNumber(item.fitness, 0) > 0.7) color = 'rgba(255,255,255,0.6)';
+    else if (asNumber(item.fitness, 0) > 0.45) color = 'rgba(255,255,255,0.35)';
+
+    const size = isBest ? 8 : 6;
+    const border = isBest ? '1px solid #fff' : 'none';
+
+    return `<div style="position:absolute; bottom:${y}%; left:${x}%; width:${size}px; height:${size}px; border:${border}; background-color:${color}; transform:translate(-50%, 50%);"></div>`;
+  }).join('');
+
+  container.innerHTML = `
+    ${dots}
     <div class="absolute -left-8 top-1/2 -rotate-90 mono-label text-[8px] text-zinc-600">FITNESS</div>
-    <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 mono-label text-[8px] text-zinc-600" style="text-transform:uppercase;">${activeScatterAxis}</div>
+    <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 mono-label text-[8px] text-zinc-600">${AXIS_LABELS[activeScatterAxis]}</div>
   `;
-  container.innerHTML = html + labelsHtml;
 }
 
-document.querySelectorAll('[data-scatter-axis]').forEach(tab => {
-  tab.addEventListener('click', () => {
-    activeScatterAxis = tab.dataset.scatterAxis;
-    document.querySelectorAll('[data-scatter-axis]').forEach(t => {
-      t.classList.remove('active', 'text-white');
-      t.classList.add('text-zinc-600');
-    });
-    tab.classList.remove('text-zinc-600');
-    tab.classList.add('active', 'text-white');
-    const lastHistory = window._lastBenchmarkData?.history ?? [];
-    updateScatterPlot(lastHistory);
-  });
-});
-
-// ── BOTTOM BAR ────────────────────────────────────────────────
 function updateBottomBar(data) {
-  window._lastBenchmarkData = data;
-    const current = data.history?.[data.history.length - 1] || data.best_params;
-    set('current-overlap', current.chunk_overlap);
-    set('current-temp',    current.temperature);
-    set('current-topk',    current.top_k);
-  }
+  const history = data.history || [];
+  const current = history.length ? history[history.length - 1] : (data.best_params || {});
+  const best = data.best_params || {};
 
-  if (data.best_params) {
-    const set = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
-    set('best-chunk',   data.best_params.chunk_size);
-    set('best-overlap', data.best_params.chunk_overlap);
-    set('best-temp',    data.best_params.temperature);
-    set('best-topk',    data.best_params.top_k);
-  }
+  setText('current-chunk', current.chunk_size ?? '--');
+  setText('current-overlap', current.chunk_overlap ?? '--');
+  setText('current-temp', Number.isFinite(Number(current.temperature)) ? asNumber(current.temperature).toFixed(2) : '--');
+  setText('current-topk', current.top_k ?? '--');
 
-  const remaining = data.total_budget - data.current_iter;
-  const avgTime   = data.elapsed_seconds / Math.max(data.current_iter, 1);
-  const estSec    = Math.round(remaining * avgTime);
-  const mm = String(Math.floor(estSec / 60)).padStart(2, '0');
-  const ss = String(estSec % 60).padStart(2, '0');
-  const etaEl = document.getElementById('eta-display');
-  if (etaEl) etaEl.textContent = `${mm}:${ss} MIN`;
-  
-  const remEl = document.getElementById('remaining-calls');
-  if (remEl) remEl.textContent = `AT CURRENT RATE, ${remaining} CALLS REMAINING`;
+  setText('best-chunk', best.chunk_size ?? '--');
+  setText('best-overlap', best.chunk_overlap ?? '--');
+  setText('best-temp', Number.isFinite(Number(best.temperature)) ? asNumber(best.temperature).toFixed(2) : '--');
+  setText('best-topk', best.top_k ?? '--');
+
+  const currentIter = asNumber(data.current_iter, 0);
+  const totalBudget = asNumber(data.total_budget, selectedBudget);
+  const remaining = Math.max(0, totalBudget - currentIter);
+  const avgTime = currentIter > 0 ? asNumber(data.elapsed_seconds, 0) / currentIter : 0;
+  const etaSeconds = Math.round(remaining * avgTime);
+
+  const etaText = currentIter === 0 ? '--:-- MIN' : `${formatClock(etaSeconds)} MIN`;
+  setText('eta-display', etaText);
+  setText('remaining-calls', `${remaining} CALLS REMAINING`);
 }
 
-// ── RUNNING STATE TOGGLE ──────────────────────────────────────
-function setRunningState(running) {
-  const badge   = document.getElementById('run-status-badge');
+function setRunningState(running, label = 'IDLE') {
+  const badge = document.getElementById('run-status-badge');
   const icon = document.getElementById('run-status-icon');
   const startBtn = document.getElementById('start-run-btn');
-  const stopBtn  = document.getElementById('stop-run-btn');
+  const stopBtn = document.getElementById('stop-run-btn');
 
   if (badge) {
-    badge.textContent = running ? '[ RUNNING ]' : '[ COMPLETE ]';
+    badge.textContent = `[ ${label} ]`;
   }
+
   if (icon) {
     icon.style.display = running ? 'block' : 'none';
   }
-  if (startBtn) startBtn.style.display = running ? 'none' : 'inline-block';
-  if (stopBtn)  stopBtn.style.display  = running ? 'inline-block' : 'none';
+
+  if (startBtn) {
+    startBtn.style.display = running ? 'none' : 'inline-block';
+    startBtn.disabled = running;
+  }
+
+  if (stopBtn) {
+    stopBtn.style.display = running ? 'inline-block' : 'none';
+    stopBtn.disabled = !running;
+  }
 }
 
-// ── INIT ──────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
+function activateScatterAxisButton(activeButton) {
+  document.querySelectorAll('[data-scatter-axis]').forEach((btn) => {
+    btn.classList.remove('text-white');
+    btn.classList.add('text-zinc-600');
+  });
+  activeButton.classList.remove('text-zinc-600');
+  activeButton.classList.add('text-white');
+}
+
+function bindScatterAxisButtons() {
+  document.querySelectorAll('[data-scatter-axis]').forEach((button) => {
+    button.addEventListener('click', () => {
+      activeScatterAxis = button.dataset.scatterAxis;
+      activateScatterAxisButton(button);
+      updateScatterPlot(lastBenchmarkData?.history || []);
+    });
+  });
+}
+
+function activateNavButton(activeButton) {
+  document.querySelectorAll('.bench-nav-btn').forEach((btn) => {
+    btn.classList.remove('text-white', 'bg-zinc-900', 'border-x-[1px]', 'border-white');
+    btn.classList.add('text-zinc-500');
+  });
+
+  activeButton.classList.remove('text-zinc-500');
+  activeButton.classList.add('text-white', 'bg-zinc-900', 'border-x-[1px]', 'border-white');
+}
+
+function bindNavigationButtons() {
+  document.querySelectorAll('.bench-nav-btn').forEach((button) => {
+    button.addEventListener('click', () => {
+      activateNavButton(button);
+      const targetId = button.dataset.navTarget;
+      const target = targetId ? document.getElementById(targetId) : null;
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+}
+
+function initialize() {
+  bindScatterAxisButtons();
+  bindNavigationButtons();
+
+  setText('kpi-current-iter', `0 / ${selectedBudget}`);
+  updateConvergenceAxis(selectedBudget);
+  updateBudgetCounter({ current_iter: 0, total_budget: selectedBudget, cache_hits: 0 });
+
+  document.getElementById('start-run-btn')?.addEventListener('click', startRun);
+  document.getElementById('stop-run-btn')?.addEventListener('click', stopRun);
+  document.getElementById('settings-budget-btn')?.addEventListener('click', promptIterations);
+  document.getElementById('refresh-state-btn')?.addEventListener('click', fetchBenchmarkState);
+
+  fetchBenchmarkState();
   connectWebSocket();
+}
 
-  document.getElementById('start-run-btn')
-    ?.addEventListener('click', startRun);
-  document.getElementById('stop-run-btn')
-    ?.addEventListener('click', stopRun);
-
-  fetch(`${API_BASE}/api/benchmark/state`)
-    .then(r => r.json())
-    .then(data => { updateAllUI(data); })
-    .catch(() => {});
-});
+document.addEventListener('DOMContentLoaded', initialize);
 </script>
 
 </body></html>

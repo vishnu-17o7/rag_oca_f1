@@ -1,7 +1,8 @@
+import asyncio
 from fastapi import APIRouter
 from pydantic import BaseModel
 from src.rag_pipeline import RAGPipeline
-from api.state import rag_cache
+from api.state import rag_cache, rag_init_lock
 
 router = APIRouter()
 
@@ -26,14 +27,21 @@ async def query_rag(req: QueryRequest):
     For chunks_retrieved: modify RAGPipeline if needed to also return
     the source chunks alongside the answer. If RAGPipeline only returns
     a string, wrap the retrieval step to also capture the docs.
-    Return max 3 chunks, each truncated to 200 characters.
+    Return retrieved chunks from the latest query for UI rendering.
     """
     cache_key = (req.chunk_size, req.chunk_overlap, req.temperature, req.top_k)
     
     if cache_key not in rag_cache:
-        rag_cache[cache_key] = RAGPipeline(
-            req.chunk_size, req.chunk_overlap, req.top_k, req.temperature
-        )
+        async with rag_init_lock:
+            if cache_key not in rag_cache:
+                print(f"[CACHE MISS] Building RAGPipeline for key={cache_key} ...")
+                rag_cache[cache_key] = await asyncio.to_thread(
+                    RAGPipeline,
+                    req.chunk_size,
+                    req.chunk_overlap,
+                    req.top_k,
+                    req.temperature,
+                )
     
     pipeline = rag_cache[cache_key]
     
@@ -51,7 +59,7 @@ async def query_rag(req: QueryRequest):
             "temperature": req.temperature,
             "top_k": req.top_k
         },
-        chunks_retrieved=chunks[:3]
+        chunks_retrieved=chunks
     )
 
 @router.get("/health")

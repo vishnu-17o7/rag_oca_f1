@@ -225,45 +225,9 @@
 <h2 class="text-[11px] font-semibold tracking-[0.1em] font-mono uppercase text-zinc-500">RETRIEVAL CONTEXT</h2>
 </div>
 <div id="chunks-container" class="p-4 flex-1 overflow-y-auto space-y-4">
-<!-- Chunk Card 01 -->
-<div class="bg-[#0a0a0a] border border-zinc-800 p-4">
-<div class="flex justify-between items-center mb-2">
-<span class="text-[10px] font-mono text-white">CHUNK 01 / 03</span>
-<span class="text-[10px] font-mono text-zinc-500">SCORE 0.91</span>
-</div>
-<p class="text-[12px] font-sans text-zinc-400 leading-relaxed mb-3">
-                    Article 28.2. Each driver is permitted to use no more than 4 (four) internal combustion engines (ICE), 4 (four) motor generator units-heat (MGU-H)...
-                </p>
-<div class="text-[9px] font-mono text-zinc-600 border-t border-zinc-900 pt-2 uppercase">
-                    FIA SPORTING REGULATIONS 2024
-                </div>
-</div>
-<!-- Chunk Card 02 -->
-<div class="bg-[#0a0a0a] border border-zinc-800 p-4">
-<div class="flex justify-between items-center mb-2">
-<span class="text-[10px] font-mono text-white">CHUNK 02 / 03</span>
-<span class="text-[10px] font-mono text-zinc-500">SCORE 0.88</span>
-</div>
-<p class="text-[12px] font-sans text-zinc-400 leading-relaxed mb-3">
-                    Should a driver use more than the permitted number of any of the seven elements, a grid place penalty will be imposed at the first Competition...
-                </p>
-<div class="text-[9px] font-mono text-zinc-600 border-t border-zinc-900 pt-2 uppercase">
-                    FIA SPORTING REGULATIONS 2024
-                </div>
-</div>
-<!-- Chunk Card 03 -->
-<div class="bg-[#0a0a0a] border border-zinc-800 p-4">
-<div class="flex justify-between items-center mb-2">
-<span class="text-[10px] font-mono text-white">CHUNK 03 / 03</span>
-<span class="text-[10px] font-mono text-zinc-500">SCORE 0.85</span>
-</div>
-<p class="text-[12px] font-sans text-zinc-400 leading-relaxed mb-3">
-                    The elements include: ICE, TC, MGU-H, MGU-K, ES, CE and EX. Any newly introduced power unit element will be deemed to have been used...
-                </p>
-<div class="text-[9px] font-mono text-zinc-600 border-t border-zinc-900 pt-2 uppercase">
-                    TECHNICAL DIRECTIVE 044-C
-                </div>
-</div>
+<div class="bg-[#0a0a0a] border border-zinc-800 p-4 text-[11px] font-mono text-zinc-500 uppercase">
+          No query yet. Retrieved chunks will appear here.
+        </div>
 </div>
 <!-- Footer: Current Parameters Grid -->
 <div class="p-4 border-t border-zinc-900 bg-[#050505]">
@@ -324,6 +288,9 @@ async function sendQuery(question) {
     top_k:         parseInt(getVal('ctrl-top-k', 4)),
   };
 
+  // Immediately show loading state in the chunk panel for this query.
+  renderChunksLoading(params.top_k);
+
   // Show thinking state — adapt selector to match your HTML's loading element
   const thinkingEl = document.getElementById('thinking-indicator');
   if (thinkingEl) thinkingEl.style.display = 'flex';
@@ -359,17 +326,45 @@ async function sendQuery(question) {
 // ── RENDER CHUNKS (right panel) ───────────────────────────────
 function renderChunks(chunks) {
   const container = document.getElementById('chunks-container');
-  if (!container || !chunks?.length) return;
+  if (!container) return;
+
+  if (!chunks || chunks.length === 0) {
+    container.innerHTML = `
+      <div class="bg-[#0a0a0a] border border-zinc-800 p-4 text-[11px] font-mono text-zinc-500 uppercase">
+        No chunks retrieved for this query.
+      </div>
+    `;
+    return;
+  }
+
+  const escapeHtml = (value) => String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+
   container.innerHTML = chunks.map((c, i) => `
     <div class="bg-[#0a0a0a] border border-zinc-800 p-4">
       <div class="flex justify-between items-center mb-2">
-        <span class="text-[10px] font-mono text-white">CHUNK 0${i+1} / 0${chunks.length}</span>
+        <span class="text-[10px] font-mono text-white">CHUNK ${String(i + 1).padStart(2, '0')} / ${String(chunks.length).padStart(2, '0')}</span>
         <span class="text-[10px] font-mono text-zinc-500">SCORE ${(c.score ?? 0).toFixed(2)}</span>
       </div>
-      <p class="text-[12px] font-sans text-zinc-400 leading-relaxed mb-3">${c.text?.slice(0, 200) ?? ''}...</p>
-      <div class="text-[9px] font-mono text-zinc-600 border-t border-zinc-900 pt-2 uppercase">${c.source ?? 'FIA REGULATIONS 2024'}</div>
+      <p class="text-[12px] font-sans text-zinc-400 leading-relaxed mb-3">${escapeHtml(c.text?.slice(0, 260) ?? '')}${(c.text && c.text.length > 260) ? '...' : ''}</p>
+      <div class="text-[9px] font-mono text-zinc-600 border-t border-zinc-900 pt-2 uppercase">${escapeHtml(c.source ?? 'FIA REGULATIONS 2024')}</div>
     </div>
   `).join('');
+}
+
+function renderChunksLoading(topK) {
+  const container = document.getElementById('chunks-container');
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="bg-[#0a0a0a] border border-zinc-800 p-4 text-[11px] font-mono text-zinc-500 uppercase">
+      Retrieving top-${topK} chunks...
+    </div>
+  `;
 }
 
 // ── UPDATE PARAMS DISPLAY ─────────────────────────────────────
