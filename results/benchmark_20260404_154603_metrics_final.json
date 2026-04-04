@@ -1,0 +1,28 @@
+{
+  "source_run_file": "benchmark_20260404_154603.json",
+  "total_evaluations": 50,
+  "best_fitness": 0.8526,
+  "best_iteration": 34,
+  "invalid_count": 1,
+  "invalid_frequency": 0.02,
+  "cache_hits": 14,
+  "cache_hit_rate": 0.28,
+  "unique_configurations": 36,
+  "unique_configuration_rate": 0.72,
+  "raw_delta_mean_abs": 0.2908428571428571,
+  "raw_delta_max_abs": 0.7404,
+  "best_improvement_events": 7,
+  "best_improvement_iterations": [
+    1,
+    2,
+    3,
+    9,
+    13,
+    33,
+    34
+  ],
+  "longest_plateau_length": 20,
+  "average_plateau_length_non_improve": 11.75,
+  "first_iteration_best_fitness_gt_0_8": 34,
+  "attained_over_0_8_within_budget": true
+}

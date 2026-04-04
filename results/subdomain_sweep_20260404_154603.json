@@ -1,0 +1,693 @@
+{
+  "source": "controlled_chunk_overlap_sweep",
+  "fixed_parameters": {
+    "G3_temperature": 1.0,
+    "G4_top_k": 1
+  },
+  "sweep": [
+    {
+      "chunk_size": 300,
+      "chunk_overlap": 50
+    },
+    {
+      "chunk_size": 500,
+      "chunk_overlap": 100
+    },
+    {
+      "chunk_size": 700,
+      "chunk_overlap": 150
+    },
+    {
+      "chunk_size": 900,
+      "chunk_overlap": 200
+    }
+  ],
+  "results": [
+    {
+      "subset": "sporting",
+      "chunk_size": 300,
+      "chunk_overlap": 50,
+      "temperature": 1.0,
+      "top_k": 1,
+      "avg_fitness": 0.45677776355296373,
+      "num_questions": 8,
+      "num_chunks": 2315,
+      "questions": [
+        {
+          "question": "What is the minimum weight of the car including the driver?",
+          "similarity": 0.1136566624045372
+        },
+        {
+          "question": "How many engines is each driver allowed per season?",
+          "similarity": 0.7894522547721863
+        },
+        {
+          "question": "What is the penalty for using an additional power unit element?",
+          "similarity": 0.2569832503795624
+        },
+        {
+          "question": "What is the maximum race distance in kilometres?",
+          "similarity": 0.31764131784439087
+        },
+        {
+          "question": "How long before the race must the starting grid be published?",
+          "similarity": 0.7265351414680481
+        },
+        {
+          "question": "What are the conditions under which a Safety Car can be deployed?",
+          "similarity": 0.11760823428630829
+        },
+        {
+          "question": "What is the minimum tyre pressure requirement during a race?",
+          "similarity": 0.6881283521652222
+        },
+        {
+          "question": "How many DRS zones are typically present on a circuit?",
+          "similarity": 0.6442168951034546
+        }
+      ]
+    },
+    {
+      "subset": "sporting",
+      "chunk_size": 500,
+      "chunk_overlap": 100,
+      "temperature": 1.0,
+      "top_k": 1,
+      "avg_fitness": 0.6189101468771696,
+      "num_questions": 8,
+      "num_chunks": 1504,
+      "questions": [
+        {
+          "question": "What is the minimum weight of the car including the driver?",
+          "similarity": 0.16762153804302216
+        },
+        {
+          "question": "How many engines is each driver allowed per season?",
+          "similarity": 0.8227649927139282
+        },
+        {
+          "question": "What is the penalty for using an additional power unit element?",
+          "similarity": 0.6866257190704346
+        },
+        {
+          "question": "What is the maximum race distance in kilometres?",
+          "similarity": 0.6287914514541626
+        },
+        {
+          "question": "How long before the race must the starting grid be published?",
+          "similarity": 0.6977744102478027
+        },
+        {
+          "question": "What are the conditions under which a Safety Car can be deployed?",
+          "similarity": 0.5032703280448914
+        },
+        {
+          "question": "What is the minimum tyre pressure requirement during a race?",
+          "similarity": 0.6986461877822876
+        },
+        {
+          "question": "How many DRS zones are typically present on a circuit?",
+          "similarity": 0.7457865476608276
+        }
+      ]
+    },
+    {
+      "subset": "sporting",
+      "chunk_size": 700,
+      "chunk_overlap": 150,
+      "temperature": 1.0,
+      "top_k": 1,
+      "avg_fitness": 0.613382950425148,
+      "num_questions": 8,
+      "num_chunks": 1126,
+      "questions": [
+        {
+          "question": "What is the minimum weight of the car including the driver?",
+          "similarity": 0.5843802094459534
+        },
+        {
+          "question": "How many engines is each driver allowed per season?",
+          "similarity": 0.6527014374732971
+        },
+        {
+          "question": "What is the penalty for using an additional power unit element?",
+          "similarity": 0.6300616264343262
+        },
+        {
+          "question": "What is the maximum race distance in kilometres?",
+          "similarity": 0.6356136798858643
+        },
+        {
+          "question": "How long before the race must the starting grid be published?",
+          "similarity": 0.7364524602890015
+        },
+        {
+          "question": "What are the conditions under which a Safety Car can be deployed?",
+          "similarity": 0.5773105621337891
+        },
+        {
+          "question": "What is the minimum tyre pressure requirement during a race?",
+          "similarity": 0.7024580836296082
+        },
+        {
+          "question": "How many DRS zones are typically present on a circuit?",
+          "similarity": 0.3880855441093445
+        }
+      ]
+    },
+    {
+      "subset": "sporting",
+      "chunk_size": 900,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 1,
+      "avg_fitness": 0.6354729570448399,
+      "num_questions": 8,
+      "num_chunks": 908,
+      "questions": [
+        {
+          "question": "What is the minimum weight of the car including the driver?",
+          "similarity": 0.6402523517608643
+        },
+        {
+          "question": "How many engines is each driver allowed per season?",
+          "similarity": 0.7608689069747925
+        },
+        {
+          "question": "What is the penalty for using an additional power unit element?",
+          "similarity": 0.560969889163971
+        },
+        {
+          "question": "What is the maximum race distance in kilometres?",
+          "similarity": 0.7266488075256348
+        },
+        {
+          "question": "How long before the race must the starting grid be published?",
+          "similarity": 0.5574987530708313
+        },
+        {
+          "question": "What are the conditions under which a Safety Car can be deployed?",
+          "similarity": 0.3870944082736969
+        },
+        {
+          "question": "What is the minimum tyre pressure requirement during a race?",
+          "similarity": 0.7523669600486755
+        },
+        {
+          "question": "How many DRS zones are typically present on a circuit?",
+          "similarity": 0.6980835795402527
+        }
+      ]
+    },
+    {
+      "subset": "technical",
+      "chunk_size": 300,
+      "chunk_overlap": 50,
+      "temperature": 1.0,
+      "top_k": 1,
+      "avg_fitness": 0.6338426023721695,
+      "num_questions": 8,
+      "num_chunks": 3252,
+      "questions": [
+        {
+          "question": "What is the minimum weight of the car including the driver?",
+          "similarity": 0.7067791819572449
+        },
+        {
+          "question": "How many engines is each driver allowed per season?",
+          "similarity": 0.7637240886688232
+        },
+        {
+          "question": "What is the penalty for using an additional power unit element?",
+          "similarity": 0.6762856245040894
+        },
+        {
+          "question": "What is the maximum race distance in kilometres?",
+          "similarity": 0.6343178153038025
+        },
+        {
+          "question": "How long before the race must the starting grid be published?",
+          "similarity": 0.552417516708374
+        },
+        {
+          "question": "What are the conditions under which a Safety Car can be deployed?",
+          "similarity": 0.3595445156097412
+        },
+        {
+          "question": "What is the minimum tyre pressure requirement during a race?",
+          "similarity": 0.7025537490844727
+        },
+        {
+          "question": "How many DRS zones are typically present on a circuit?",
+          "similarity": 0.6751183271408081
+        }
+      ]
+    },
+    {
+      "subset": "technical",
+      "chunk_size": 500,
+      "chunk_overlap": 100,
+      "temperature": 1.0,
+      "top_k": 1,
+      "avg_fitness": 0.5315269585698843,
+      "num_questions": 8,
+      "num_chunks": 2125,
+      "questions": [
+        {
+          "question": "What is the minimum weight of the car including the driver?",
+          "similarity": 0.6754564642906189
+        },
+        {
+          "question": "How many engines is each driver allowed per season?",
+          "similarity": 0.20488722622394562
+        },
+        {
+          "question": "What is the penalty for using an additional power unit element?",
+          "similarity": 0.6319434642791748
+        },
+        {
+          "question": "What is the maximum race distance in kilometres?",
+          "similarity": 0.6876949667930603
+        },
+        {
+          "question": "How long before the race must the starting grid be published?",
+          "similarity": 0.6615321636199951
+        },
+        {
+          "question": "What are the conditions under which a Safety Car can be deployed?",
+          "similarity": 0.46993064880371094
+        },
+        {
+          "question": "What is the minimum tyre pressure requirement during a race?",
+          "similarity": 0.6713610887527466
+        },
+        {
+          "question": "How many DRS zones are typically present on a circuit?",
+          "similarity": 0.24940964579582214
+        }
+      ]
+    },
+    {
+      "subset": "technical",
+      "chunk_size": 700,
+      "chunk_overlap": 150,
+      "temperature": 1.0,
+      "top_k": 1,
+      "avg_fitness": 0.49073570780456066,
+      "num_questions": 8,
+      "num_chunks": 1516,
+      "questions": [
+        {
+          "question": "What is the minimum weight of the car including the driver?",
+          "similarity": 0.6513667702674866
+        },
+        {
+          "question": "How many engines is each driver allowed per season?",
+          "similarity": 0.4610033929347992
+        },
+        {
+          "question": "What is the penalty for using an additional power unit element?",
+          "similarity": 0.5163912773132324
+        },
+        {
+          "question": "What is the maximum race distance in kilometres?",
+          "similarity": 0.7244791984558105
+        },
+        {
+          "question": "How long before the race must the starting grid be published?",
+          "similarity": 0.32291314005851746
+        },
+        {
+          "question": "What are the conditions under which a Safety Car can be deployed?",
+          "similarity": 0.4783300757408142
+        },
+        {
+          "question": "What is the minimum tyre pressure requirement during a race?",
+          "similarity": 0.5656102895736694
+        },
+        {
+          "question": "How many DRS zones are typically present on a circuit?",
+          "similarity": 0.20579151809215546
+        }
+      ]
+    },
+    {
+      "subset": "technical",
+      "chunk_size": 900,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 1,
+      "avg_fitness": 0.5404906291514635,
+      "num_questions": 8,
+      "num_chunks": 1211,
+      "questions": [
+        {
+          "question": "What is the minimum weight of the car including the driver?",
+          "similarity": 0.31616365909576416
+        },
+        {
+          "question": "How many engines is each driver allowed per season?",
+          "similarity": 0.7499945163726807
+        },
+        {
+          "question": "What is the penalty for using an additional power unit element?",
+          "similarity": 0.43082183599472046
+        },
+        {
+          "question": "What is the maximum race distance in kilometres?",
+          "similarity": 0.7148011922836304
+        },
+        {
+          "question": "How long before the race must the starting grid be published?",
+          "similarity": 0.780397891998291
+        },
+        {
+          "question": "What are the conditions under which a Safety Car can be deployed?",
+          "similarity": 0.4073675274848938
+        },
+        {
+          "question": "What is the minimum tyre pressure requirement during a race?",
+          "similarity": 0.7725987434387207
+        },
+        {
+          "question": "How many DRS zones are typically present on a circuit?",
+          "similarity": 0.1517796665430069
+        }
+      ]
+    },
+    {
+      "subset": "financial_general",
+      "chunk_size": 300,
+      "chunk_overlap": 50,
+      "temperature": 1.0,
+      "top_k": 1,
+      "avg_fitness": 0.5099271405488253,
+      "num_questions": 8,
+      "num_chunks": 1664,
+      "questions": [
+        {
+          "question": "What is the minimum weight of the car including the driver?",
+          "similarity": 0.4453608989715576
+        },
+        {
+          "question": "How many engines is each driver allowed per season?",
+          "similarity": 0.7559508085250854
+        },
+        {
+          "question": "What is the penalty for using an additional power unit element?",
+          "similarity": 0.45814773440361023
+        },
+        {
+          "question": "What is the maximum race distance in kilometres?",
+          "similarity": 0.7729392051696777
+        },
+        {
+          "question": "How long before the race must the starting grid be published?",
+          "similarity": 0.18871034681797028
+        },
+        {
+          "question": "What are the conditions under which a Safety Car can be deployed?",
+          "similarity": 0.48247000575065613
+        },
+        {
+          "question": "What is the minimum tyre pressure requirement during a race?",
+          "similarity": 0.7686220407485962
+        },
+        {
+          "question": "How many DRS zones are typically present on a circuit?",
+          "similarity": 0.2072160840034485
+        }
+      ]
+    },
+    {
+      "subset": "financial_general",
+      "chunk_size": 500,
+      "chunk_overlap": 100,
+      "temperature": 1.0,
+      "top_k": 1,
+      "avg_fitness": 0.5605420563369989,
+      "num_questions": 8,
+      "num_chunks": 1095,
+      "questions": [
+        {
+          "question": "What is the minimum weight of the car including the driver?",
+          "similarity": 0.6442837715148926
+        },
+        {
+          "question": "How many engines is each driver allowed per season?",
+          "similarity": 0.6058859825134277
+        },
+        {
+          "question": "What is the penalty for using an additional power unit element?",
+          "similarity": 0.06917418539524078
+        },
+        {
+          "question": "What is the maximum race distance in kilometres?",
+          "similarity": 0.7744358777999878
+        },
+        {
+          "question": "How long before the race must the starting grid be published?",
+          "similarity": 0.7483599781990051
+        },
+        {
+          "question": "What are the conditions under which a Safety Car can be deployed?",
+          "similarity": 0.4876134991645813
+        },
+        {
+          "question": "What is the minimum tyre pressure requirement during a race?",
+          "similarity": 0.6773873567581177
+        },
+        {
+          "question": "How many DRS zones are typically present on a circuit?",
+          "similarity": 0.4771957993507385
+        }
+      ]
+    },
+    {
+      "subset": "financial_general",
+      "chunk_size": 700,
+      "chunk_overlap": 150,
+      "temperature": 1.0,
+      "top_k": 1,
+      "avg_fitness": 0.6000407561659813,
+      "num_questions": 8,
+      "num_chunks": 815,
+      "questions": [
+        {
+          "question": "What is the minimum weight of the car including the driver?",
+          "similarity": 0.7058116793632507
+        },
+        {
+          "question": "How many engines is each driver allowed per season?",
+          "similarity": 0.7256563901901245
+        },
+        {
+          "question": "What is the penalty for using an additional power unit element?",
+          "similarity": 0.5259249210357666
+        },
+        {
+          "question": "What is the maximum race distance in kilometres?",
+          "similarity": 0.7037012577056885
+        },
+        {
+          "question": "How long before the race must the starting grid be published?",
+          "similarity": 0.3298620283603668
+        },
+        {
+          "question": "What are the conditions under which a Safety Car can be deployed?",
+          "similarity": 0.44277092814445496
+        },
+        {
+          "question": "What is the minimum tyre pressure requirement during a race?",
+          "similarity": 0.6983217597007751
+        },
+        {
+          "question": "How many DRS zones are typically present on a circuit?",
+          "similarity": 0.6682770848274231
+        }
+      ]
+    },
+    {
+      "subset": "financial_general",
+      "chunk_size": 900,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 1,
+      "avg_fitness": 0.5351268164813519,
+      "num_questions": 8,
+      "num_chunks": 658,
+      "questions": [
+        {
+          "question": "What is the minimum weight of the car including the driver?",
+          "similarity": 0.3436194658279419
+        },
+        {
+          "question": "How many engines is each driver allowed per season?",
+          "similarity": 0.666632890701294
+        },
+        {
+          "question": "What is the penalty for using an additional power unit element?",
+          "similarity": 0.53644198179245
+        },
+        {
+          "question": "What is the maximum race distance in kilometres?",
+          "similarity": 0.5390723943710327
+        },
+        {
+          "question": "How long before the race must the starting grid be published?",
+          "similarity": 0.5784404277801514
+        },
+        {
+          "question": "What are the conditions under which a Safety Car can be deployed?",
+          "similarity": 0.17067888379096985
+        },
+        {
+          "question": "What is the minimum tyre pressure requirement during a race?",
+          "similarity": 0.688146710395813
+        },
+        {
+          "question": "How many DRS zones are typically present on a circuit?",
+          "similarity": 0.7579817771911621
+        }
+      ]
+    }
+  ],
+  "best_by_subset": {
+    "sporting": {
+      "subset": "sporting",
+      "chunk_size": 900,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 1,
+      "avg_fitness": 0.6354729570448399,
+      "num_questions": 8,
+      "num_chunks": 908,
+      "questions": [
+        {
+          "question": "What is the minimum weight of the car including the driver?",
+          "similarity": 0.6402523517608643
+        },
+        {
+          "question": "How many engines is each driver allowed per season?",
+          "similarity": 0.7608689069747925
+        },
+        {
+          "question": "What is the penalty for using an additional power unit element?",
+          "similarity": 0.560969889163971
+        },
+        {
+          "question": "What is the maximum race distance in kilometres?",
+          "similarity": 0.7266488075256348
+        },
+        {
+          "question": "How long before the race must the starting grid be published?",
+          "similarity": 0.5574987530708313
+        },
+        {
+          "question": "What are the conditions under which a Safety Car can be deployed?",
+          "similarity": 0.3870944082736969
+        },
+        {
+          "question": "What is the minimum tyre pressure requirement during a race?",
+          "similarity": 0.7523669600486755
+        },
+        {
+          "question": "How many DRS zones are typically present on a circuit?",
+          "similarity": 0.6980835795402527
+        }
+      ]
+    },
+    "technical": {
+      "subset": "technical",
+      "chunk_size": 300,
+      "chunk_overlap": 50,
+      "temperature": 1.0,
+      "top_k": 1,
+      "avg_fitness": 0.6338426023721695,
+      "num_questions": 8,
+      "num_chunks": 3252,
+      "questions": [
+        {
+          "question": "What is the minimum weight of the car including the driver?",
+          "similarity": 0.7067791819572449
+        },
+        {
+          "question": "How many engines is each driver allowed per season?",
+          "similarity": 0.7637240886688232
+        },
+        {
+          "question": "What is the penalty for using an additional power unit element?",
+          "similarity": 0.6762856245040894
+        },
+        {
+          "question": "What is the maximum race distance in kilometres?",
+          "similarity": 0.6343178153038025
+        },
+        {
+          "question": "How long before the race must the starting grid be published?",
+          "similarity": 0.552417516708374
+        },
+        {
+          "question": "What are the conditions under which a Safety Car can be deployed?",
+          "similarity": 0.3595445156097412
+        },
+        {
+          "question": "What is the minimum tyre pressure requirement during a race?",
+          "similarity": 0.7025537490844727
+        },
+        {
+          "question": "How many DRS zones are typically present on a circuit?",
+          "similarity": 0.6751183271408081
+        }
+      ]
+    },
+    "financial_general": {
+      "subset": "financial_general",
+      "chunk_size": 700,
+      "chunk_overlap": 150,
+      "temperature": 1.0,
+      "top_k": 1,
+      "avg_fitness": 0.6000407561659813,
+      "num_questions": 8,
+      "num_chunks": 815,
+      "questions": [
+        {
+          "question": "What is the minimum weight of the car including the driver?",
+          "similarity": 0.7058116793632507
+        },
+        {
+          "question": "How many engines is each driver allowed per season?",
+          "similarity": 0.7256563901901245
+        },
+        {
+          "question": "What is the penalty for using an additional power unit element?",
+          "similarity": 0.5259249210357666
+        },
+        {
+          "question": "What is the maximum race distance in kilometres?",
+          "similarity": 0.7037012577056885
+        },
+        {
+          "question": "How long before the race must the starting grid be published?",
+          "similarity": 0.3298620283603668
+        },
+        {
+          "question": "What are the conditions under which a Safety Car can be deployed?",
+          "similarity": 0.44277092814445496
+        },
+        {
+          "question": "What is the minimum tyre pressure requirement during a race?",
+          "similarity": 0.6983217597007751
+        },
+        {
+          "question": "How many DRS zones are typically present on a circuit?",
+          "similarity": 0.6682770848274231
+        }
+      ]
+    }
+  },
+  "scope_limits": [
+    "Evaluation questions come from src/gold_standard.json and are mostly sporting/technical.",
+    "Financial-specific labeled Q/A is limited, so financial_general results are transfer-oriented."
+  ]
+}
