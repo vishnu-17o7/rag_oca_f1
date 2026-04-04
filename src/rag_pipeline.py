@@ -6,20 +6,24 @@ Loads PDF documents, builds vector store, and queries with Ollama
 import glob
 import os
 import shutil
+import importlib
 import torch
-from typing import List, Optional
+from typing import List
 
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_ollama import ChatOllama
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.runnables import RunnablePassthrough
 from langchain_core.prompts import (
+    ChatPromptTemplate,
     SystemMessagePromptTemplate,
     HumanMessagePromptTemplate,
 )
+
+if importlib.util.find_spec("langchain_ollama") is not None:
+    ChatOllama = importlib.import_module("langchain_ollama").ChatOllama
+else:
+    ChatOllama = importlib.import_module("langchain_community.chat_models").ChatOllama
 
 
 class RAGPipeline:
@@ -53,11 +57,11 @@ class RAGPipeline:
 
         # Create embeddings
         print("[STEP 1/5] Loading embedding model...")
-        
+
         # Determine optimal device
         device = "cuda" if torch.cuda.is_available() else "cpu"
         print(f"  -> Using device mapping: {device}")
-        
+
         embeddings = HuggingFaceEmbeddings(
             model_name="BAAI/bge-small-en-v1.5", model_kwargs={"device": device}
         )
@@ -230,6 +234,7 @@ Answer:"""
     def _format_docs(self, docs) -> str:
         """Format retrieved documents into a context string with timing."""
         import time
+
         start = time.time()
         result = "\n\n".join(doc.page_content for doc in docs)
         print(f"  -> [TIMING] Document formatting took {time.time() - start:.6f}s")
@@ -237,7 +242,7 @@ Answer:"""
 
     def get_last_chunks(self) -> list:
         """Returns last retrieved chunks as [{text, score, source}]"""
-        return getattr(self, '_last_chunks', [])
+        return getattr(self, "_last_chunks", [])
 
     def query(self, question: str) -> str:
         """
@@ -250,12 +255,12 @@ Answer:"""
             The generated answer string
         """
         import time
-        from langchain_core.runnables import RunnableLambda
+
         start_time = time.time()
-        
+
         print(f"\n[QUERY START] Question: {question}")
         print(f"  -> Retrieving top-{self.top_k} documents...")
-        
+
         # Capture structured chunks with scores for the frontend
         try:
             retr_start = time.time()
@@ -266,12 +271,12 @@ Answer:"""
 
             # Extract document objects for the chain
             docs = [doc for doc, score in results]
-            
+
             self._last_chunks = [
                 {
                     "text": doc.page_content,
                     "score": float(score),
-                    "source": os.path.basename(doc.metadata.get("source", "FIA REGULATIONS"))
+                    "source": os.path.basename(doc.metadata.get("source", "FIA REGULATIONS")),
                 }
                 for doc, score in results
             ]
@@ -289,33 +294,35 @@ Answer:"""
         try:
             print(f"  -> [STAGE 2/4] Initializing LLM chain components...")
             llm_prep_start = time.time()
-            
+
             # Pass pre-retrieved docs directly into the chain input
             chain_input = {
                 "context": docs,
-                "question": question
+                "question": question,
             }
             print(f"  -> [TIMING] Chain input preparation took {time.time() - llm_prep_start:.6f}s")
-            
+
             print(f"  -> [STAGE 3/4] Invoking LLM chain (model: {self.model_name})...")
             llm_invoke_start = time.time()
-            
-            # Using stream or direct invoke? Let's check timings around the response
+
             response = self.chain.invoke(chain_input)
             llm_invoke_end = time.time()
-            
-            print(f"  -> [STAGE 4/4] LLM response received.")
-            print(f"  -> [TIMING] actual chain.invoke() execution took {llm_invoke_end - llm_invoke_start:.3f}s")
-            
+
+            print("  -> [STAGE 4/4] LLM response received.")
+            print(
+                f"  -> [TIMING] actual chain.invoke() execution took {llm_invoke_end - llm_invoke_start:.3f}s"
+            )
+
             result = response.content if hasattr(response, "content") else str(response)
             if not result:
                 print("  -> [WARN] LLM returned an empty response string.")
-            
+
             print(f"  -> [TOTAL TIMING] Query finished in {time.time() - start_time:.3f}s")
             print("[QUERY END]\n")
             return result
         except Exception as e:
             print(f"  -> [ERROR] Query failed at LLM/Chain stage: {e}")
             import traceback
+
             traceback.print_exc()
             return "Error generating response."

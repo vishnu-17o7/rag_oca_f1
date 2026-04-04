@@ -1,8 +1,39 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
-import asyncio, time
+import asyncio, time, json, os
+from datetime import datetime
 from api.state import benchmark_state
 
 router = APIRouter()
+
+RESULTS_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "results")
+
+
+def save_benchmark_results():
+    """Save benchmark results to a timestamped JSON file."""
+    if not os.path.exists(RESULTS_DIR):
+        os.makedirs(RESULTS_DIR)
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"benchmark_{timestamp}.json"
+    filepath = os.path.join(RESULTS_DIR, filename)
+
+    result_data = {
+        "timestamp": timestamp,
+        "best_fitness": benchmark_state.best_fitness,
+        "best_params": benchmark_state.best_params,
+        "avg_fitness": benchmark_state.avg_fitness,
+        "total_iterations": benchmark_state.current_iter,
+        "invalid_count": benchmark_state.invalid_count,
+        "cache_hits": benchmark_state.cache_hits,
+        "elapsed_seconds": benchmark_state.elapsed_seconds,
+        "history": benchmark_state.history,
+    }
+
+    with open(filepath, "w") as f:
+        json.dump(result_data, f, indent=2)
+
+    return filename
+
 
 # ── WebSocket Manager ──────────────────────────────────────────
 
@@ -28,6 +59,7 @@ class ConnectionManager:
         for ws in dead:
             self.connections.remove(ws)
 
+
 manager = ConnectionManager()
 
 
@@ -42,6 +74,7 @@ def normalize_budget(value: object, default: int = 100) -> int:
     except (TypeError, ValueError):
         parsed = default
     return max(1, min(parsed, 1000))
+
 
 # ── WebSocket Endpoint ─────────────────────────────────────────
 
@@ -66,6 +99,7 @@ async def benchmark_websocket(ws: WebSocket):
     except WebSocketDisconnect:
         manager.disconnect(ws)
 
+
 # ── Optimization Runner ────────────────────────────────────────
 
 async def run_optimization(budget: int = 100):
@@ -77,7 +111,7 @@ async def run_optimization(budget: int = 100):
     from research.oca import OverclockingAlgorithm
     import numpy as np
     from src.fitness import fitness_function, _evaluation_cache
-    
+
     # Capture the active event loop once; fitness callbacks run in a worker
     # thread and must hand async work back to this loop thread-safely.
     loop = asyncio.get_running_loop()
@@ -101,9 +135,9 @@ async def run_optimization(budget: int = 100):
 
     BOUNDS = [
         (100, 1000),  # chunk_size
-        (0,   200),   # chunk_overlap
-        (0.0, 1.0),   # temperature
-        (1,   10),    # top_k
+        (0, 200),  # chunk_overlap
+        (0.0, 1.0),  # temperature
+        (1, 10),  # top_k
     ]
 
     call_count = [0]  # mutable container for closure
@@ -117,30 +151,30 @@ async def run_optimization(budget: int = 100):
         2. Cache hit detection
         3. State update + broadcast after each eval
         """
-        chunk_size    = int(round(params[0]))
+        chunk_size = int(round(params[0]))
         chunk_overlap = int(round(params[1]))
-        temperature   = round(float(params[2]), 2)
-        top_k         = int(round(params[3]))
-        
+        temperature = round(float(params[2]), 2)
+        top_k = int(round(params[3]))
+
         cache_key = (chunk_size, chunk_overlap, temperature, top_k)
         was_cached = cache_key in _evaluation_cache
-            
+
         score = fitness_function(params)
         call_count[0] += 1
-        
+
         if was_cached:
             benchmark_state.cache_hits += 1
-        
+
         if chunk_overlap >= chunk_size:
             benchmark_state.invalid_count += 1
             status = "PENALTY"
         else:
             status = "OK"
-        
+
         # Update state
         benchmark_state.current_iter = call_count[0]
         benchmark_state.elapsed_seconds = int(time.time() - start_time)
-        
+
         if status == "OK" and (
             benchmark_state.best_params is None or score >= benchmark_state.best_fitness
         ):
@@ -149,9 +183,9 @@ async def run_optimization(budget: int = 100):
                 "chunk_size": chunk_size,
                 "chunk_overlap": chunk_overlap,
                 "temperature": temperature,
-                "top_k": top_k
+                "top_k": top_k,
             }
-        
+
         entry = {
             "iter": call_count[0],
             "chunk_size": chunk_size,
@@ -160,7 +194,7 @@ async def run_optimization(budget: int = 100):
             "top_k": top_k,
             "fitness": round(score, 4),
             "status": status,
-            "cached": was_cached
+            "cached": was_cached,
         }
         benchmark_state.history.append(entry)
 
@@ -176,7 +210,7 @@ async def run_optimization(budget: int = 100):
             else:
                 stagnant_iters[0] = 0
             last_best[0] = current_best
-        
+
         # Broadcast state updates from worker thread to main asyncio loop.
         asyncio.run_coroutine_threadsafe(
             manager.broadcast(build_update_payload()),
@@ -190,11 +224,11 @@ async def run_optimization(budget: int = 100):
             raise OptimizationTerminated(
                 "Converged: minimal best-fitness change for 10 consecutive iterations"
             )
-        
+
         # Handle early stop if user pressed stop button
         if not benchmark_state.is_running:
             raise OptimizationTerminated("Optimization stopped by user")
-            
+
         return score
 
     # Wrapper logic from main.py
@@ -213,7 +247,7 @@ async def run_optimization(budget: int = 100):
         pop_size = 10
         num_p_cores = 3
         max_iterations = max(1, max_evals // pop_size)
-        
+
         oca = OverclockingAlgorithm(
             pop_size=pop_size,
             num_p_cores=num_p_cores,
@@ -221,17 +255,17 @@ async def run_optimization(budget: int = 100):
             final_voltage=0.0,
             aggressive_voltage=True,
         )
-        
+
         all_lower = min(b[0] for b in BOUNDS)
         all_upper = max(b[1] for b in BOUNDS)
-        
+
         oca.optimize(
             objective_fn=_objective_wrapper,
             bounds=(all_lower, all_upper),
             dim=dim,
             max_iterations=max_iterations,
         )
-        
+
         # Fill remaining budget
         remaining = max_evals - call_count[0]
         while remaining > 0 and call_count[0] < max_evals and benchmark_state.is_running:
@@ -246,7 +280,7 @@ async def run_optimization(budget: int = 100):
     try:
         await loop.run_in_executor(
             None,
-            run_oca_sync
+            run_oca_sync,
         )
     except OptimizationTerminated:
         pass  # Expected if user stops
@@ -255,7 +289,10 @@ async def run_optimization(budget: int = 100):
     finally:
         benchmark_state.is_running = False
         benchmark_state.elapsed_seconds = int(time.time() - start_time)
-        await manager.broadcast({"type": "complete", **build_update_payload()})
+        saved_file = save_benchmark_results()
+        await manager.broadcast(
+            {"type": "complete", **build_update_payload(), "saved_file": saved_file}
+        )
 
 
 def build_update_payload() -> dict:
@@ -272,7 +309,7 @@ def build_update_payload() -> dict:
         "invalid_count": s.invalid_count,
         "cache_hits": s.cache_hits,
         "elapsed_seconds": s.elapsed_seconds,
-        "history": s.history,   # full list — browser diffs this
+        "history": s.history,  # full list — browser diffs this
     }
 
 
@@ -282,6 +319,7 @@ def build_update_payload() -> dict:
 async def get_benchmark_state():
     """HTTP fallback — returns current benchmark state as JSON."""
     return build_update_payload()
+
 
 @router.post("/benchmark/start")
 async def start_benchmark(budget: int = 100):
