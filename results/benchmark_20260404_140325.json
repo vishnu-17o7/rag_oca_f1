@@ -1,0 +1,47 @@
+{
+  "timestamp": "20260404_140325",
+  "best_fitness": 0.6850731931626797,
+  "best_params": {
+    "chunk_size": 764,
+    "chunk_overlap": 200,
+    "temperature": 1.0,
+    "top_k": 10
+  },
+  "avg_fitness": 0.6550666666666667,
+  "total_iterations": 2,
+  "invalid_count": 0,
+  "cache_hits": 0,
+  "elapsed_seconds": 122,
+  "history": [
+    {
+      "iter": 1,
+      "chunk_size": 853,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.65,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 1,
+      "chunk_size": 461,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.6301,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 2,
+      "chunk_size": 764,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.6851,
+      "status": "OK",
+      "cached": false
+    }
+  ]
+}

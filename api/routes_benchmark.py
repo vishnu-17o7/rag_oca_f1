@@ -117,8 +117,6 @@ async def run_optimization(budget: int = 100):
     loop = asyncio.get_running_loop()
 
     max_evals = normalize_budget(budget)
-    convergence_patience = 10
-    convergence_min_delta = 1e-4
 
     benchmark_state.is_running = True
     benchmark_state.total_budget = max_evals
@@ -141,8 +139,6 @@ async def run_optimization(budget: int = 100):
     ]
 
     call_count = [0]  # mutable container for closure
-    stagnant_iters = [0]
-    last_best = [None]
 
     def instrumented_fitness(params):
         """
@@ -201,16 +197,6 @@ async def run_optimization(budget: int = 100):
         all_scores = [h["fitness"] for h in benchmark_state.history if h["status"] == "OK"]
         benchmark_state.avg_fitness = sum(all_scores) / len(all_scores) if all_scores else 0.0
 
-        if status == "OK":
-            current_best = benchmark_state.best_fitness
-            if last_best[0] is None:
-                stagnant_iters[0] = 0
-            elif abs(current_best - last_best[0]) <= convergence_min_delta:
-                stagnant_iters[0] += 1
-            else:
-                stagnant_iters[0] = 0
-            last_best[0] = current_best
-
         # Broadcast state updates from worker thread to main asyncio loop.
         asyncio.run_coroutine_threadsafe(
             manager.broadcast(build_update_payload()),
@@ -219,11 +205,6 @@ async def run_optimization(budget: int = 100):
 
         if call_count[0] >= max_evals:
             raise OptimizationTerminated(f"Reached max iterations ({max_evals})")
-
-        if benchmark_state.best_params is not None and stagnant_iters[0] >= convergence_patience:
-            raise OptimizationTerminated(
-                "Converged: minimal best-fitness change for 10 consecutive iterations"
-            )
 
         # Handle early stop if user pressed stop button
         if not benchmark_state.is_running:

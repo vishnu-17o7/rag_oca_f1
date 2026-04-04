@@ -1,0 +1,27 @@
+{
+  "timestamp": "20260404_145204",
+  "best_fitness": 0.5731016360223293,
+  "best_params": {
+    "chunk_size": 698,
+    "chunk_overlap": 200,
+    "temperature": 1.0,
+    "top_k": 10
+  },
+  "avg_fitness": 0.5731,
+  "total_iterations": 1,
+  "invalid_count": 0,
+  "cache_hits": 0,
+  "elapsed_seconds": 52,
+  "history": [
+    {
+      "iter": 1,
+      "chunk_size": 698,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.5731,
+      "status": "OK",
+      "cached": false
+    }
+  ]
+}

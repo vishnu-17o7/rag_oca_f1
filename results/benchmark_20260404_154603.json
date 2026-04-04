@@ -1,0 +1,517 @@
+{
+  "timestamp": "20260404_154603",
+  "best_fitness": 0.8525656595826149,
+  "best_params": {
+    "chunk_size": 976,
+    "chunk_overlap": 200,
+    "temperature": 1.0,
+    "top_k": 1
+  },
+  "avg_fitness": 0.48520408163265316,
+  "total_iterations": 50,
+  "invalid_count": 1,
+  "cache_hits": 14,
+  "elapsed_seconds": 1347,
+  "history": [
+    {
+      "iter": 1,
+      "chunk_size": 615,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.5863,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 2,
+      "chunk_size": 848,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.6388,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 3,
+      "chunk_size": 770,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.6741,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 4,
+      "chunk_size": 892,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.6419,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 5,
+      "chunk_size": 673,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.6194,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 6,
+      "chunk_size": 394,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.6533,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 7,
+      "chunk_size": 780,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.6576,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 8,
+      "chunk_size": 357,
+      "chunk_overlap": 102,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.5919,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 9,
+      "chunk_size": 960,
+      "chunk_overlap": 194,
+      "temperature": 1.0,
+      "top_k": 8,
+      "fitness": 0.6804,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 10,
+      "chunk_size": 108,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.0,
+      "status": "PENALTY",
+      "cached": false
+    },
+    {
+      "iter": 11,
+      "chunk_size": 1000,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.6687,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 12,
+      "chunk_size": 869,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.6454,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 13,
+      "chunk_size": 954,
+      "chunk_overlap": 200,
+      "temperature": 0.0,
+      "top_k": 1,
+      "fitness": 0.7404,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 14,
+      "chunk_size": 964,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.6499,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 15,
+      "chunk_size": 688,
+      "chunk_overlap": 147,
+      "temperature": 1.0,
+      "top_k": 1,
+      "fitness": 0.6651,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 16,
+      "chunk_size": 1000,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.6687,
+      "status": "OK",
+      "cached": true
+    },
+    {
+      "iter": 17,
+      "chunk_size": 780,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.6576,
+      "status": "OK",
+      "cached": true
+    },
+    {
+      "iter": 18,
+      "chunk_size": 516,
+      "chunk_overlap": 100,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.6848,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 19,
+      "chunk_size": 997,
+      "chunk_overlap": 190,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.5707,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 20,
+      "chunk_size": 1000,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.6687,
+      "status": "OK",
+      "cached": true
+    },
+    {
+      "iter": 21,
+      "chunk_size": 1000,
+      "chunk_overlap": 200,
+      "temperature": 0.0,
+      "top_k": 1,
+      "fitness": 0.0,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 22,
+      "chunk_size": 954,
+      "chunk_overlap": 200,
+      "temperature": 0.0,
+      "top_k": 1,
+      "fitness": 0.7404,
+      "status": "OK",
+      "cached": true
+    },
+    {
+      "iter": 23,
+      "chunk_size": 1000,
+      "chunk_overlap": 200,
+      "temperature": 0.0,
+      "top_k": 1,
+      "fitness": 0.0,
+      "status": "OK",
+      "cached": true
+    },
+    {
+      "iter": 24,
+      "chunk_size": 1000,
+      "chunk_overlap": 200,
+      "temperature": 0.0,
+      "top_k": 1,
+      "fitness": 0.0,
+      "status": "OK",
+      "cached": true
+    },
+    {
+      "iter": 25,
+      "chunk_size": 706,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 1,
+      "fitness": 0.6464,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 26,
+      "chunk_size": 1000,
+      "chunk_overlap": 200,
+      "temperature": 0.0,
+      "top_k": 10,
+      "fitness": 0.0,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 27,
+      "chunk_size": 889,
+      "chunk_overlap": 200,
+      "temperature": 0.0,
+      "top_k": 10,
+      "fitness": 0.7047,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 28,
+      "chunk_size": 1000,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 1,
+      "fitness": 0.0,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 29,
+      "chunk_size": 936,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 1,
+      "fitness": 0.6792,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 30,
+      "chunk_size": 1000,
+      "chunk_overlap": 200,
+      "temperature": 0.0,
+      "top_k": 1,
+      "fitness": 0.0,
+      "status": "OK",
+      "cached": true
+    },
+    {
+      "iter": 31,
+      "chunk_size": 1000,
+      "chunk_overlap": 200,
+      "temperature": 0.0,
+      "top_k": 1,
+      "fitness": 0.0,
+      "status": "OK",
+      "cached": true
+    },
+    {
+      "iter": 32,
+      "chunk_size": 988,
+      "chunk_overlap": 200,
+      "temperature": 0.0,
+      "top_k": 1,
+      "fitness": 0.6364,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 33,
+      "chunk_size": 978,
+      "chunk_overlap": 200,
+      "temperature": 0.0,
+      "top_k": 1,
+      "fitness": 0.7452,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 34,
+      "chunk_size": 976,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 1,
+      "fitness": 0.8526,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 35,
+      "chunk_size": 991,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 1,
+      "fitness": 0.6625,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 36,
+      "chunk_size": 1000,
+      "chunk_overlap": 200,
+      "temperature": 0.0,
+      "top_k": 10,
+      "fitness": 0.0,
+      "status": "OK",
+      "cached": true
+    },
+    {
+      "iter": 37,
+      "chunk_size": 1000, 
+      "chunk_overlap": 200,
+      "temperature": 0.0,
+      "top_k": 10,
+      "fitness": 0.0,
+      "status": "OK",
+      "cached": true
+    },
+    {
+      "iter": 38,
+      "chunk_size": 888,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 1,
+      "fitness": 0.6334,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 39,
+      "chunk_size": 928,
+      "chunk_overlap": 200,
+      "temperature": 0.0,
+      "top_k": 1,
+      "fitness": 0.7099,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 40,
+      "chunk_size": 1000,
+      "chunk_overlap": 200,
+      "temperature": 0.0,
+      "top_k": 1,
+      "fitness": 0.0,
+      "status": "OK",
+      "cached": true
+    },
+    {
+      "iter": 41,
+      "chunk_size": 1000,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 1,
+      "fitness": 0.0,
+      "status": "OK",
+      "cached": true
+    },
+    {
+      "iter": 42,
+      "chunk_size": 994,
+      "chunk_overlap": 200,
+      "temperature": 0.0,
+      "top_k": 1,
+      "fitness": 0.6397,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 43,
+      "chunk_size": 964,
+      "chunk_overlap": 200,
+      "temperature": 0.0,
+      "top_k": 1,
+      "fitness": 0.0,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 44,
+      "chunk_size": 968,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 1,
+      "fitness": 0.6133,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 45,
+      "chunk_size": 931,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 1,
+      "fitness": 0.6991,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 46,
+      "chunk_size": 1000,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.6687,
+      "status": "OK",
+      "cached": true
+    },
+    {
+      "iter": 47,
+      "chunk_size": 894,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 1,
+      "fitness": 0.6134,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 48,
+      "chunk_size": 885,
+      "chunk_overlap": 185,
+      "temperature": 1.0,
+      "top_k": 1,
+      "fitness": 0.6517,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 49,
+      "chunk_size": 975,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 1,
+      "fitness": 0.6147,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 50,
+      "chunk_size": 1000,
+      "chunk_overlap": 200,
+      "temperature": 0.0,
+      "top_k": 10,
+      "fitness": 0.0,
+      "status": "OK",
+      "cached": true
+    }
+  ]
+}

@@ -1,0 +1,257 @@
+{
+  "timestamp": "20260404_143654",
+  "best_fitness": 0.7066317573189735,
+  "best_params": {
+    "chunk_size": 365,
+    "chunk_overlap": 200,
+    "temperature": 1.0,
+    "top_k": 10
+  },
+  "avg_fitness": 0.643215,
+  "total_iterations": 24,
+  "invalid_count": 4,
+  "cache_hits": 0,
+  "elapsed_seconds": 991,
+  "history": [
+    {
+      "iter": 1,
+      "chunk_size": 359,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.6978,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 2,
+      "chunk_size": 100,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.0,
+      "status": "PENALTY",
+      "cached": false
+    },
+    {
+      "iter": 3,
+      "chunk_size": 797,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.6519,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 4,
+      "chunk_size": 210,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.659,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 5,
+      "chunk_size": 418,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.6524,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 6,
+      "chunk_size": 872,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.5516,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 7,
+      "chunk_size": 100,
+      "chunk_overlap": 66,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.6898,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 8,
+      "chunk_size": 568,
+      "chunk_overlap": 40,
+      "temperature": 1.0,
+      "top_k": 7,
+      "fitness": 0.6219,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 9,
+      "chunk_size": 335,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.659,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 10,
+      "chunk_size": 527,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.6363,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 11,
+      "chunk_size": 365,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.7066,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 12,
+      "chunk_size": 100,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.0,
+      "status": "PENALTY",
+      "cached": false
+    },
+    {
+      "iter": 13,
+      "chunk_size": 774,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.5653,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 14,
+      "chunk_size": 272,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.651,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 15,
+      "chunk_size": 323,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.5782,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 16,
+      "chunk_size": 516,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.5511,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 17,
+      "chunk_size": 145,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.0,
+      "status": "PENALTY",
+      "cached": false
+    },
+    {
+      "iter": 18,
+      "chunk_size": 435,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.676,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 19,
+      "chunk_size": 373,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.6469,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 20,
+      "chunk_size": 492,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.6601,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 21,
+      "chunk_size": 360,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.6656,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 22,
+      "chunk_size": 352,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.6448,
+      "status": "OK",
+      "cached": false
+    },
+    {
+      "iter": 23,
+      "chunk_size": 161,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.0,
+      "status": "PENALTY",
+      "cached": false
+    },
+    {
+      "iter": 24,
+      "chunk_size": 344,
+      "chunk_overlap": 200,
+      "temperature": 1.0,
+      "top_k": 10,
+      "fitness": 0.699,
+      "status": "OK",
+      "cached": false
+    }
+  ]
+}
