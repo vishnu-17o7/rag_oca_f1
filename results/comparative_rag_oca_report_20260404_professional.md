@@ -15,7 +15,7 @@ body {
 }
 
 h1.title, .author, .date {
-  text-align: center;
+  text-align: center !important;
 }
 
 h1, h2, h3, h4, h5, h6 {
