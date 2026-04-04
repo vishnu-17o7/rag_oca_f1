@@ -3,7 +3,6 @@ DEPRECATED: Use `uvicorn server:app --reload` instead
 Main Entry Point for RAG Hyperparameter Optimization
 Uses OCA (Overclocking Algorithm) to find optimal RAG configuration
 """
-
 import os
 import sys
 import numpy as np
@@ -15,7 +14,6 @@ sys.path.insert(0, project_root)
 from research.oca import OverclockingAlgorithm
 from src.fitness import fitness_function, get_cache_size
 from src.visualize import plot_convergence, print_table
-
 
 # ============================================================================
 # Configuration
