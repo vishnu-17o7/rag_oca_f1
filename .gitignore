@@ -1,4 +1,16 @@
 myenv
+.venv/
 /__pycache__
 api/__pycache__
 __pycache__
+
+# Vector index directories
+leann_index/
+chroma_db/
+
+# Environment files
+.env
+run.ps1
+
+# Results
+results/

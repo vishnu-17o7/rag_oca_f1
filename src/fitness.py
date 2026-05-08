@@ -17,7 +17,7 @@ _model = SentenceTransformer("all-MiniLM-L6-v2")
 # Load gold standard Q&A pairs
 _project_root = os.path.dirname(os.path.dirname(__file__))
 _gold_path = os.path.join(_project_root, "src", "gold_standard.json")
-_chroma_root = os.path.join(_project_root, "chroma_db")
+_leann_root = os.path.join(_project_root, "leann_index")
 
 with open(_gold_path, "r") as f:
     GOLD_STANDARD = json.load(f)
@@ -28,20 +28,20 @@ _last_persist_dir: Optional[str] = None
 
 
 def _get_persist_dir(chunk_size: int, chunk_overlap: int) -> str:
-    return os.path.join(_chroma_root, f"db_{chunk_size}_{chunk_overlap}")
+    return os.path.join(_leann_root, f"db_{chunk_size}_{chunk_overlap}")
 
 
 def _cleanup_previous_persist_dir(current_persist_dir: str) -> None:
-    """Keep only the active iteration's persisted vector store directory."""
+    """Keep only the active iteration's persisted LEANN index directory."""
     global _last_persist_dir
 
     current_abs = os.path.abspath(current_persist_dir)
-    chroma_root_abs = os.path.abspath(_chroma_root)
+    leann_root_abs = os.path.abspath(_leann_root)
 
     if _last_persist_dir is None:
-        if os.path.isdir(chroma_root_abs):
-            for entry in os.listdir(chroma_root_abs):
-                candidate = os.path.join(chroma_root_abs, entry)
+        if os.path.isdir(leann_root_abs):
+            for entry in os.listdir(leann_root_abs):
+                candidate = os.path.join(leann_root_abs, entry)
                 candidate_abs = os.path.abspath(candidate)
                 if (
                     entry.startswith("db_")
@@ -50,9 +50,9 @@ def _cleanup_previous_persist_dir(current_persist_dir: str) -> None:
                 ):
                     try:
                         shutil.rmtree(candidate_abs)
-                        print(f"[CLEANUP] Removed stale vector store: {candidate_abs}")
+                        print(f"[CLEANUP] Removed stale LEANN index: {candidate_abs}")
                     except Exception as exc:
-                        print(f"[WARN] Could not remove stale vector store '{candidate_abs}': {exc}")
+                        print(f"[WARN] Could not remove stale LEANN index '{candidate_abs}': {exc}")
         _last_persist_dir = current_abs
         return
 
@@ -60,14 +60,14 @@ def _cleanup_previous_persist_dir(current_persist_dir: str) -> None:
 
     if (
         previous_abs != current_abs
-        and previous_abs.startswith(chroma_root_abs)
+        and previous_abs.startswith(leann_root_abs)
         and os.path.isdir(previous_abs)
     ):
         try:
             shutil.rmtree(previous_abs)
-            print(f"[CLEANUP] Removed previous vector store: {previous_abs}")
+            print(f"[CLEANUP] Removed previous LEANN index: {previous_abs}")
         except Exception as exc:
-            print(f"[WARN] Could not remove previous vector store '{previous_abs}': {exc}")
+            print(f"[WARN] Could not remove previous LEANN index '{previous_abs}': {exc}")
 
     _last_persist_dir = current_abs
 

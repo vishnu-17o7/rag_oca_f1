@@ -8,10 +8,10 @@ router = APIRouter()
 
 class QueryRequest(BaseModel):
     question: str
-    chunk_size: int = 600
-    chunk_overlap: int = 80
+    chunk_size: int = 1000
+    chunk_overlap: int = 200
     temperature: float = 0.2
-    top_k: int = 4
+    top_k: int = 6
 
 class QueryResponse(BaseModel):
     answer: str
