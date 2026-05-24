@@ -2,7 +2,7 @@ import asyncio
 import os
 import time
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 
 load_dotenv()
 print(f"[{time.strftime('%H:%M:%S')}] [SERVER] .env loaded")
@@ -11,9 +11,12 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from api.routes_chat import router as chat_router
 from api.routes_benchmark import router as benchmark_router
-from api.state import rag_cache, rag_init_lock
+from api.state import rag_cache, rag_init_lock, limiter
 from src.rag_pipeline import RAGPipeline
 from contextlib import asynccontextmanager
+from slowapi.errors import RateLimitExceeded
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.middleware import LimiterMiddleware
 
 DEFAULT_RAG_KEY = (700, 100, 0.0, 4)
 DEFAULT_RAG_PARAMS = {
@@ -70,9 +73,15 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="F1 REG / RAG", docs_url=None, redoc_url=None, lifespan=lifespan)
 
+# Rate limiter
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_middleware(LimiterMiddleware, limiter=limiter)
+
 # Quick health endpoint (always responds immediately, even before pipeline is ready)
 @app.get("/health")
-async def health():
+@limiter.exempt
+async def health(request: Request):
     return {"status": "ok", "pipeline_ready": DEFAULT_RAG_KEY in rag_cache}
 
 # Mount static files
@@ -87,17 +96,20 @@ app.include_router(benchmark_router, prefix="/api")
 
 # Serve HTML pages at clean routes
 @app.get("/")
-async def serve_chat():
+@limiter.exempt
+async def serve_chat(request: Request):
     return FileResponse("static/chat.html")
 print(f"[{time.strftime('%H:%M:%S')}] [ROUTE] GET / -> static/chat.html")
 
 @app.get("/bench")
-async def serve_benchmark():
+@limiter.exempt
+async def serve_benchmark(request: Request):
     return FileResponse("static/benchmark.html")
 print(f"[{time.strftime('%H:%M:%S')}] [ROUTE] GET /bench -> static/benchmark.html")
 
 @app.get("/healthz")
-def healthz():
+@limiter.exempt
+async def healthz(request: Request):
     return {"ok": True}
 print(f"[{time.strftime('%H:%M:%S')}] [ROUTE] GET /healthz -> 200 (liveness probe)")
 

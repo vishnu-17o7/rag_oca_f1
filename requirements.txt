@@ -13,6 +13,7 @@ sentence-transformers
 transformers
 pypdf
 langchain-groq
+slowapi>=0.1.9
 langchain-huggingface
 langchain-chroma
 python-dotenv

@@ -1,11 +1,11 @@
 import asyncio
 import time
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 
 print(f"[{time.strftime('%H:%M:%S')}] [MODULE] api/routes_chat.py loaded")
 from pydantic import BaseModel
 from src.rag_pipeline import RAGPipeline
-from api.state import rag_cache, rag_init_lock
+from api.state import rag_cache, rag_init_lock, limiter
 
 router = APIRouter()
 
@@ -22,7 +22,8 @@ class QueryResponse(BaseModel):
     chunks_retrieved: list  # [{text: str, score: float, source: str}]
 
 @router.post("/query", response_model=QueryResponse)
-async def query_rag(req: QueryRequest):
+@limiter.limit("5/minute")
+async def query_rag(request: Request, req: QueryRequest):
     """
     Instantiate (or retrieve cached) RAGPipeline with given params.
     Call .query(question), return answer + retrieved chunks.
@@ -66,7 +67,8 @@ async def query_rag(req: QueryRequest):
     )
 
 @router.get("/health")
-async def health():
+@limiter.exempt
+async def health(request: Request):
     """Returns server status, PDF count, and pipeline stats."""
     import glob, os
     pdfs = glob.glob("data/*.pdf")

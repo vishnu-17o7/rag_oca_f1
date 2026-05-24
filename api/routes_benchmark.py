@@ -1,7 +1,7 @@
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Request
 import asyncio, time, json, os
 from datetime import datetime
-from api.state import benchmark_state
+from api.state import benchmark_state, limiter
 
 router = APIRouter()
 
@@ -303,7 +303,8 @@ async def get_benchmark_state():
 
 
 @router.post("/benchmark/start")
-async def start_benchmark(budget: int = 100):
+@limiter.limit("1/minute")
+async def start_benchmark(request: Request, budget: int = 100):
     """HTTP trigger for starting a run (fallback if WS not available)."""
     if not benchmark_state.is_running:
         asyncio.create_task(run_optimization(normalize_budget(budget)))
