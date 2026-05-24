@@ -103,7 +103,7 @@ tailwind.config = {
 
 <!-- ── LEFT SIDEBAR ── -->
 <aside id="sidebar" class="sidebar-nav w-[240px] h-full flex flex-col border-r border-outline bg-paper fixed left-0 top-0 z-30">
-  <div class="p-4 border-b border-outline flex items-center justify-between">
+  <div class="p-4 border-b border-outline flex items-center justify-between shrink-0">
     <div>
       <h1 class="text-[11px] font-semibold tracking-[0.15em] mono text-ink uppercase">F1 REG / RAG</h1>
       <p class="text-[9px] mono text-muted uppercase mt-0.5">GROQ · BGE-BASE · RE-RANKER</p>
@@ -111,41 +111,55 @@ tailwind.config = {
     <button onclick="closeSidebar()" class="lg:hidden text-muted hover:text-ink material-symbols-outlined" style="font-size:18px">close</button>
   </div>
 
-  <div class="p-4 flex flex-col gap-4">
-    <h2 class="text-[10px] font-semibold tracking-[0.1em] mono uppercase text-muted">HYPERPARAMETERS</h2>
-    <div class="grid grid-cols-2 gap-3">
-      <div><span class="block text-[9px] mono text-muted uppercase">CHUNK</span><span id="ctrl-chunk-size" class="block text-sm mono text-ink">--</span></div>
-      <div><span class="block text-[9px] mono text-muted uppercase">OVERLAP</span><span id="ctrl-chunk-overlap" class="block text-sm mono text-ink">--</span></div>
-      <div><span class="block text-[9px] mono text-muted uppercase">TEMP</span><span id="ctrl-temperature" class="block text-sm mono text-ink">--</span></div>
-      <div><span class="block text-[9px] mono text-muted uppercase">TOP K</span><span id="ctrl-top-k" class="block text-sm mono text-ink">--</span></div>
-    </div>
-  </div>
-
-  <div class="p-4 space-y-2">
-    <div class="border border-outline p-3 flex flex-col">
-      <span class="text-[9px] mono text-muted uppercase">BEST SCORE</span>
-      <span id="best-score" class="text-lg mono text-ink">--</span>
-    </div>
-    <div class="border border-outline p-3 flex flex-col">
-      <span class="text-[9px] mono text-muted uppercase">ITERATIONS</span>
-      <span id="iterations" class="text-lg mono text-ink">--</span>
-    </div>
-    <div class="border border-outline p-3 flex flex-col">
-      <span class="text-[9px] mono text-muted uppercase">CALLS USED</span>
-      <span id="calls-used" class="text-lg mono text-ink">--</span>
-    </div>
-  </div>
-
-  <div class="p-4 mt-auto border-t border-outline">
-    <div class="flex flex-col gap-2">
-      <div class="flex items-center gap-2">
-        <span id="model-indicator" class="w-1.5 h-1.5 bg-muted rounded-full"></span>
-        <span id="model-name" class="text-[10px] mono text-muted uppercase">CHECKING...</span>
+  <div class="flex-1 overflow-y-auto">
+    <!-- Document Inventory -->
+    <div class="p-4 border-b border-outline">
+      <h2 class="text-[10px] font-semibold tracking-[0.1em] mono uppercase text-muted mb-2">DOCUMENTS</h2>
+      <div class="grid grid-cols-2 gap-2 mb-3">
+        <div class="border border-outline p-2">
+          <span class="block text-[7px] mono text-muted uppercase">PDFs</span>
+          <span id="sidebar-pdf-count" class="block text-sm mono text-ink">--</span>
+        </div>
+        <div class="border border-outline p-2">
+          <span class="block text-[7px] mono text-muted uppercase">CHUNKS</span>
+          <span id="sidebar-chunk-count" class="block text-sm mono text-ink">--</span>
+        </div>
       </div>
-      <a href="/bench" class="flex items-center gap-2 text-[10px] mono text-muted hover:text-ink transition-colors uppercase">
-        <span class="material-symbols-outlined" style="font-size:14px">monitoring</span>
-        <span>BENCHMARK DASHBOARD</span>
-      </a>
+      <div id="sidebar-pdf-list" class="max-h-[200px] overflow-y-auto space-y-0.5">
+        <!-- populated by JS -->
+      </div>
+    </div>
+
+    <!-- Session Stats -->
+    <div class="p-4 border-b border-outline">
+      <h2 class="text-[10px] font-semibold tracking-[0.1em] mono uppercase text-muted mb-2">SESSION</h2>
+      <div class="grid grid-cols-2 gap-2">
+        <div class="border border-outline p-2">
+          <span class="block text-[7px] mono text-muted uppercase">QUERIES</span>
+          <span id="sidebar-query-count" class="block text-sm mono text-ink">0</span>
+        </div>
+        <div class="border border-outline p-2">
+          <span class="block text-[7px] mono text-muted uppercase">STATUS</span>
+          <span id="sidebar-session-status" class="block text-sm mono text-ink">--</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Model Info -->
+    <div class="p-4">
+      <h2 class="text-[10px] font-semibold tracking-[0.1em] mono uppercase text-muted mb-2">MODEL</h2>
+      <div class="space-y-1.5">
+        <div><span class="text-[8px] mono text-muted uppercase">LLM</span><span id="sidebar-llm" class="block text-[11px] mono text-ink">--</span></div>
+        <div><span class="text-[8px] mono text-muted uppercase">EMBEDDING</span><span id="sidebar-embed" class="block text-[11px] mono text-ink">bge-base-en-v1.5</span></div>
+        <div><span class="text-[8px] mono text-muted uppercase">RE-RANKER</span><span id="sidebar-reranker" class="block text-[11px] mono text-ink">bge-reranker-base</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-4 border-t border-outline shrink-0">
+    <div class="flex items-center gap-2">
+      <span id="model-indicator" class="w-1.5 h-1.5 bg-muted rounded-full"></span>
+      <span id="model-name" class="text-[10px] mono text-muted uppercase">CHECKING...</span>
     </div>
   </div>
 </aside>
@@ -262,6 +276,8 @@ const _urlParams = new URLSearchParams(window.location.search);
 const _signParam = _urlParams.get("__sign");
 const _querySuffix = _signParam ? `?__sign=${encodeURIComponent(_signParam)}` : "";
 const API_BASE = window.location.origin;
+const _isHfSpace = window.location.hostname.includes("hf.space") || !!_signParam;
+let _sessionQueryCount = 0;
 const EXAMPLE_QUERIES = [
   "What is the minimum weight of the car including the driver?",
   "How many engines is each driver allowed per season?",
@@ -302,43 +318,28 @@ async function checkHealth() {
       docCount.classList.remove("hidden");
     }
 
-    if (data.pdf_names && data.pdf_names.length > 0) {
-      // Try to extract model from the pipeline info
-    }
-
-    // Infer model name from pipeline (we know defaults)
     modelName.textContent = "GROQ / BGE-BASE";
     modelIndicator.className = "w-1.5 h-1.5 bg-white rounded-full pulse-live";
+
+    // Update sidebar inventory
+    setText("sidebar-pdf-count", pdfCount);
+    setText("sidebar-chunk-count", data.chunk_count ?? "--");
+    setText("sidebar-session-status", statusText);
+
+    const listEl = $("sidebar-pdf-list");
+    if (listEl && data.pdf_names && data.pdf_names.length > 0) {
+      listEl.innerHTML = data.pdf_names.map(n =>
+        `<div class="flex items-center gap-1.5 text-[9px] mono text-ink-2">
+          <span class="material-symbols-outlined text-muted" style="font-size:10px">description</span>
+          <span class="truncate">${escapeHtml(n)}</span>
+        </div>`
+      ).join("");
+    }
   } catch (e) {
     $("status-text").textContent = "OFFLINE";
     $("status-dot").className = "w-1.5 h-1.5 bg-error rounded-full";
+    setText("sidebar-session-status", "OFFLINE");
   }
-}
-
-// ── BENCHMARK STATE ─────────────────────────────────────────────
-let lastBenchState = null;
-
-async function fetchBenchState() {
-  try {
-    const res = await fetch(`${API_BASE}/api/benchmark/state${_querySuffix}`);
-    if (!res.ok) return;
-    const data = await res.json();
-    applyBenchState(data);
-  } catch (e) { /* silent */ }
-}
-
-function applyBenchState(data) {
-  lastBenchState = data;
-  const bp = data.best_params;
-  if (bp) {
-    setText("ctrl-chunk-size", bp.chunk_size ?? "--");
-    setText("ctrl-chunk-overlap", bp.chunk_overlap ?? "--");
-    setText("ctrl-temperature", bp.temperature != null ? bp.temperature.toFixed(2) : "--");
-    setText("ctrl-top-k", bp.top_k ?? "--");
-  }
-  setText("best-score", data.best_fitness != null ? data.best_fitness.toFixed(3) : "--");
-  setText("iterations", data.current_iter != null ? String(data.current_iter) : "--");
-  setText("calls-used", data.total_budget != null ? `${data.current_iter ?? 0} / ${data.total_budget}` : "--");
 }
 
 function setText(id, val) {
@@ -346,22 +347,48 @@ function setText(id, val) {
   if (el) el.textContent = val;
 }
 
-// ── WEBSOCKET LIVE UPDATES ──────────────────────────────────────
-let ws = null;
+// ── BENCHMARK STATE (HF Space only) ───────────────────────────
+let lastBenchState = null;
 
-function connectWS() {
-  const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-  ws = new WebSocket(`${protocol}://${window.location.host}/api/ws/benchmark${_querySuffix}`);
-  ws.onmessage = (ev) => {
+if (!_isHfSpace) {
+  async function fetchBenchState() {
     try {
-      const data = JSON.parse(ev.data);
-      if (data.type === "update" || data.type === "complete") {
-        applyBenchState(data);
-      }
-    } catch (e) { /* ignore */ }
-  };
-  ws.onclose = () => setTimeout(connectWS, 3000);
-  ws.onerror = () => { ws = null; };
+      const res = await fetch(`${API_BASE}/api/benchmark/state${_querySuffix}`);
+      if (!res.ok) return;
+      applyBenchState(await res.json());
+    } catch (e) { /* silent */ }
+  }
+
+  function applyBenchState(data) {
+    lastBenchState = data;
+    const bp = data.best_params;
+    if (bp) {
+      setText("ctrl-chunk-size", bp.chunk_size ?? "--");
+      setText("ctrl-chunk-overlap", bp.chunk_overlap ?? "--");
+      setText("ctrl-temperature", bp.temperature != null ? bp.temperature.toFixed(2) : "--");
+      setText("ctrl-top-k", bp.top_k ?? "--");
+    }
+    setText("best-score", data.best_fitness != null ? data.best_fitness.toFixed(3) : "--");
+    setText("iterations", data.current_iter != null ? String(data.current_iter) : "--");
+    setText("calls-used", data.total_budget != null ? `${data.current_iter ?? 0} / ${data.total_budget}` : "--");
+  }
+
+  let ws = null;
+
+  function connectWS() {
+    const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+    ws = new WebSocket(`${protocol}://${window.location.host}/api/ws/benchmark${_querySuffix}`);
+    ws.onmessage = (ev) => {
+      try {
+        const data = JSON.parse(ev.data);
+        if (data.type === "update" || data.type === "complete") {
+          applyBenchState(data);
+        }
+      } catch (e) { /* ignore */ }
+    };
+    ws.onclose = () => setTimeout(connectWS, 3000);
+    ws.onerror = () => { ws = null; };
+  }
 }
 
 // ── SAFE PARSE HELPERS ──────────────────────────────────────────
@@ -376,12 +403,14 @@ function safeFloat(val, fallback) {
 
 // ── QUERY ───────────────────────────────────────────────────────
 async function sendQuery(question) {
+  _sessionQueryCount++;
+
   const params = {
     question,
-    chunk_size:    safeInt($("ctrl-chunk-size")?.textContent, 700),
-    chunk_overlap: safeInt($("ctrl-chunk-overlap")?.textContent, 100),
-    temperature:   safeFloat($("ctrl-temperature")?.textContent, 0.0),
-    top_k:         safeInt($("ctrl-top-k")?.textContent, 4),
+    chunk_size:    safeInt($("param-size")?.textContent, 700),
+    chunk_overlap: safeInt($("param-over")?.textContent, 100),
+    temperature:   safeFloat($("param-temp")?.textContent, 0.0),
+    top_k:         safeInt($("param-k")?.textContent, 4),
   };
 
   // Show thinking, hide empty state
@@ -407,13 +436,7 @@ async function sendQuery(question) {
     renderChunks(data.chunks_retrieved);
     updateParamsUsed(data.params_used);
 
-    // Update sidebar params from actual response
-    if (data.params_used) {
-      setText("ctrl-chunk-size", data.params_used.chunk_size ?? "--");
-      setText("ctrl-chunk-overlap", data.params_used.chunk_overlap ?? "--");
-      setText("ctrl-temperature", data.params_used.temperature != null ? data.params_used.temperature.toFixed(2) : "--");
-      setText("ctrl-top-k", data.params_used.top_k ?? "--");
-    }
+    setText("sidebar-query-count", _sessionQueryCount);
   } catch (err) {
     thinkingEl?.classList.add("hidden");
     appendMessage("error", `[ERROR] ${err.message}`);
@@ -624,8 +647,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Fetch data
   checkHealth();
-  fetchBenchState();
-  connectWS();
+  if (!_isHfSpace) {
+    if (typeof fetchBenchState === "function") fetchBenchState();
+    if (typeof connectWS === "function") connectWS();
+  }
 
   // Focus input on load
   chatInput?.focus();

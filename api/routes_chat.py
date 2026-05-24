@@ -67,11 +67,18 @@ async def query_rag(req: QueryRequest):
 
 @router.get("/health")
 async def health():
-    """Returns server status and PDF count."""
+    """Returns server status, PDF count, and pipeline stats."""
     import glob, os
     pdfs = glob.glob("data/*.pdf")
+
+    # Grab chunk count from the default cached pipeline if available
+    default_key = (700, 100, 0.0, 4)
+    pipeline = rag_cache.get(default_key)
+    chunk_count = len(pipeline.chunks) if pipeline and hasattr(pipeline, "chunks") and pipeline.chunks else 0
+
     return {
         "status": "ok",
         "pdfs_loaded": len(pdfs),
-        "pdf_names": [os.path.basename(p) for p in pdfs]
+        "pdf_names": sorted(os.path.basename(p) for p in pdfs),
+        "chunk_count": chunk_count,
     }
