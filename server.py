@@ -1,9 +1,12 @@
 import asyncio
 import os
+import time
 from dotenv import load_dotenv
 from fastapi import FastAPI
 
 load_dotenv()
+print(f"[{time.strftime('%H:%M:%S')}] [SERVER] .env loaded")
+
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from api.routes_chat import router as chat_router
@@ -30,25 +33,28 @@ async def ensure_default_pipeline():
         if DEFAULT_RAG_KEY in rag_cache:
             return
 
-        print("Initializing Default RAGPipeline...")
+        print(f"[{time.strftime('%H:%M:%S')}] [PIPELINE] Initializing Default RAGPipeline (blocking)...")
+        t0 = time.time()
         rag_cache[DEFAULT_RAG_KEY] = await asyncio.to_thread(
             RAGPipeline, **DEFAULT_RAG_PARAMS
         )
-        print("RAGPipeline initialized.")
+        print(f"[{time.strftime('%H:%M:%S')}] [PIPELINE] RAGPipeline initialized in {time.time() - t0:.0f}s")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     startup_mode = os.getenv("RAG_STARTUP_MODE", "blocking").strip().lower()
+    print(f"[{time.strftime('%H:%M:%S')}] [LIFESPAN] Startup mode: {startup_mode}")
 
     if startup_mode in {"blocking", "sync", "eager"}:
-        print("RAG startup mode: blocking preload")
+        print(f"[{time.strftime('%H:%M:%S')}] [LIFESPAN] BLOCKING: will not accept requests until pipeline is ready")
         await ensure_default_pipeline()
     elif startup_mode in {"background", "bg"}:
-        print("RAG startup mode: background warmup")
+        print(f"[{time.strftime('%H:%M:%S')}] [LIFESPAN] BACKGROUND: server accepts requests immediately, pipeline warms up in background")
         app.state.rag_warmup_task = asyncio.create_task(ensure_default_pipeline())
     else:
-        print("RAG startup mode: lazy (skip preload for fast server startup)")
+        print(f"[{time.strftime('%H:%M:%S')}] [LIFESPAN] LAZY: server accepts requests immediately, pipeline builds on first query")
 
+    print(f"[{time.strftime('%H:%M:%S')}] [LIFESPAN] Startup complete — server is now accepting requests")
     yield
 
     warmup_task = getattr(app.state, "rag_warmup_task", None)
@@ -59,26 +65,43 @@ async def lifespan(app: FastAPI):
         except asyncio.CancelledError:
             pass
 
-    # Cleanup on shutdown if needed
     rag_cache.clear()
+    print(f"[{time.strftime('%H:%M:%S')}] [LIFESPAN] Shutdown complete")
 
 app = FastAPI(title="F1 REG / RAG", docs_url=None, redoc_url=None, lifespan=lifespan)
 
+# Quick health endpoint (always responds immediately, even before pipeline is ready)
+@app.get("/health")
+async def health():
+    return {"status": "ok", "pipeline_ready": DEFAULT_RAG_KEY in rag_cache}
+
 # Mount static files
+print(f"[{time.strftime('%H:%M:%S')}] [ROUTE] Mounting /static -> static/")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Register routers
+print(f"[{time.strftime('%H:%M:%S')}] [ROUTE] Registering /api/* (chat)")
 app.include_router(chat_router, prefix="/api")
+print(f"[{time.strftime('%H:%M:%S')}] [ROUTE] Registering /api/* (benchmark)")
 app.include_router(benchmark_router, prefix="/api")
 
 # Serve HTML pages at clean routes
 @app.get("/")
 async def serve_chat():
     return FileResponse("static/chat.html")
+print(f"[{time.strftime('%H:%M:%S')}] [ROUTE] GET / -> static/chat.html")
 
 @app.get("/bench")
 async def serve_benchmark():
     return FileResponse("static/benchmark.html")
+print(f"[{time.strftime('%H:%M:%S')}] [ROUTE] GET /bench -> static/benchmark.html")
+
+@app.get("/healthz")
+def healthz():
+    return {"ok": True}
+print(f"[{time.strftime('%H:%M:%S')}] [ROUTE] GET /healthz -> 200 (liveness probe)")
+
+print(f"[{time.strftime('%H:%M:%S')}] [SERVER] All routes registered. Handing over to uvicorn...")
 
 # Run with: uvicorn server:app --port 8000
 # Optional: RAG_STARTUP_MODE=background|blocking|lazy (default: lazy)

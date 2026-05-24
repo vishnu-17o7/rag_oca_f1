@@ -1,5 +1,8 @@
 import asyncio
+import time
 from fastapi import APIRouter
+
+print(f"[{time.strftime('%H:%M:%S')}] [MODULE] api/routes_chat.py loaded")
 from pydantic import BaseModel
 from src.rag_pipeline import RAGPipeline
 from api.state import rag_cache, rag_init_lock

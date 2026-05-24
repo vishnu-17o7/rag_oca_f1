@@ -1,6 +1,9 @@
+import time
 from dataclasses import dataclass, field
 from typing import Optional
 import asyncio
+
+print(f"[{time.strftime('%H:%M:%S')}] [MODULE] api/state.py loaded")
 
 @dataclass
 class BenchmarkState:
