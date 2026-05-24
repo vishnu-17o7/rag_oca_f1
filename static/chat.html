@@ -257,6 +257,10 @@ tailwind.config = {
 
 <script>
 // ── CONFIG ──────────────────────────────────────────────────────
+// HF Spaces private proxy uses ?__sign= for auth — pass it through on API calls
+const _urlParams = new URLSearchParams(window.location.search);
+const _signParam = _urlParams.get("__sign");
+const _querySuffix = _signParam ? `?__sign=${encodeURIComponent(_signParam)}` : "";
 const API_BASE = window.location.origin;
 const EXAMPLE_QUERIES = [
   "What is the minimum weight of the car including the driver?",
@@ -280,7 +284,7 @@ const thinkingEl = $("thinking-indicator");
 // ── HEALTH CHECK ────────────────────────────────────────────────
 async function checkHealth() {
   try {
-    const res = await fetch(`${API_BASE}/api/health`);
+    const res = await fetch(`${API_BASE}/api/health${_querySuffix}`);
     const data = await res.json();
     const statusText = data.status === "ok" ? "ONLINE" : "DEGRADED";
     const statusDot = $("status-dot");
@@ -316,7 +320,7 @@ let lastBenchState = null;
 
 async function fetchBenchState() {
   try {
-    const res = await fetch(`${API_BASE}/api/benchmark/state`);
+    const res = await fetch(`${API_BASE}/api/benchmark/state${_querySuffix}`);
     if (!res.ok) return;
     const data = await res.json();
     applyBenchState(data);
@@ -347,7 +351,7 @@ let ws = null;
 
 function connectWS() {
   const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-  ws = new WebSocket(`${protocol}://${window.location.host}/api/ws/benchmark`);
+  ws = new WebSocket(`${protocol}://${window.location.host}/api/ws/benchmark${_querySuffix}`);
   ws.onmessage = (ev) => {
     try {
       const data = JSON.parse(ev.data);
@@ -390,7 +394,7 @@ async function sendQuery(question) {
   showChunksLoading(params.top_k);
 
   try {
-    const res = await fetch(`${API_BASE}/api/query`, {
+    const res = await fetch(`${API_BASE}/api/query${_querySuffix}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(params),

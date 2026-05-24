@@ -258,6 +258,9 @@
 <div class="h-16"></div>
 
 <script>
+const _urlParams = new URLSearchParams(window.location.search);
+const _signParam = _urlParams.get("__sign");
+const _querySuffix = _signParam ? `?__sign=${encodeURIComponent(_signParam)}` : "";
 const API_BASE = window.location.origin;
 const DEFAULT_BUDGET = 100;
 const MIN_BUDGET = 1;
@@ -313,7 +316,7 @@ function formatClock(totalSeconds) {
 
 function getWebSocketUrl() {
   const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-  return `${protocol}://${window.location.host}/api/ws/benchmark`;
+  return `${protocol}://${window.location.host}/api/ws/benchmark${_querySuffix}`;
 }
 
 function renderElapsedTimer() {
@@ -395,7 +398,7 @@ function sendWs(payload) {
 
 async function fetchBenchmarkState() {
   try {
-    const response = await fetch(`${API_BASE}/api/benchmark/state`);
+    const response = await fetch(`${API_BASE}/api/benchmark/state${_querySuffix}`);
     if (!response.ok) return;
     const data = await response.json();
     updateAllUI(data);
@@ -418,7 +421,7 @@ async function startRun() {
   const sent = sendWs({ action: 'start', budget });
   if (!sent) {
     try {
-      await fetch(`${API_BASE}/api/benchmark/start?budget=${encodeURIComponent(budget)}`, { method: 'POST' });
+      await fetch(`${API_BASE}/api/benchmark/start?budget=${encodeURIComponent(budget)}${_querySuffix.replace('?', '&')}`, { method: 'POST' });
     } catch (err) {
       console.error('[HTTP] Failed to start benchmark:', err);
     }
@@ -459,7 +462,7 @@ async function stopRun() {
   const sent = sendWs({ action: 'stop' });
   if (!sent) {
     try {
-      await fetch(`${API_BASE}/api/benchmark/stop`, { method: 'POST' });
+      await fetch(`${API_BASE}/api/benchmark/stop${_querySuffix}`, { method: 'POST' });
     } catch (err) {
       console.error('[HTTP] Failed to stop benchmark:', err);
     }
