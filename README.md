@@ -1,7 +1,7 @@
 ---
 title: F1 REG / RAG
 emoji: 🏎️
-colorFrom: black
+colorFrom: blue
 colorTo: gray
 sdk: docker
 app_port: 7860
