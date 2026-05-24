@@ -328,7 +328,7 @@ Answer:"""
 
         start = time.time()
         result = "\n\n".join(doc.page_content for doc in docs)
-            _log(f"[TIME] Document formatting took {time.time() - start:.6f}s")
+        _log(f"[TIME] Document formatting took {time.time() - start:.6f}s")
         return result
 
     def get_last_chunks(self) -> list:
