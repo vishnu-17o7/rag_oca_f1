@@ -13,6 +13,7 @@ sentence-transformers
 transformers
 pypdf
 langchain-groq
+langchain-huggingface
 python-dotenv
 numpy
 matplotlib
