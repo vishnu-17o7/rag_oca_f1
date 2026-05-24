@@ -56,6 +56,12 @@ class RAGPipeline:
         print(f"[{_ts()}]   - top_k: {top_k}")
         print(f"[{_ts()}]   - temperature: {temperature}")
 
+        self.chunk_size = chunk_size
+        self.chunk_overlap = chunk_overlap
+        self.top_k = top_k
+        self.temperature = temperature
+        print(f"[{_ts()}] [INIT] Attributes assigned. chunk_size={self.chunk_size}")
+
         # Create embeddings
         print(f"[{_ts()}] [STEP 1/5] Loading embedding model...")
 
