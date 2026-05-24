@@ -14,6 +14,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY . .
 
+# Unbuffer stdout so HF Spaces log collector shows prints in real time
+ENV PYTHONUNBUFFERED=1
+
 # Expose HF Space default port
 EXPOSE 7860
 

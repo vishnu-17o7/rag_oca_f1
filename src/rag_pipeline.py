@@ -6,6 +6,7 @@ Loads PDF documents, builds vector store, and queries via Groq
 import glob
 import os
 import shutil
+import sys
 import time
 import torch
 from typing import List
@@ -31,6 +32,11 @@ def _ts():
     """Return a wall-clock timestamp string for debug logs."""
     return time.strftime("%H:%M:%S", time.localtime())
 
+def _log(msg):
+    """Print with timestamp and immediate flush for HF Space log collector."""
+    _log(f" {msg}")
+    sys.stdout.flush()
+
 
 class RAGPipeline:
     """
@@ -50,24 +56,23 @@ class RAGPipeline:
         top_k: int = 3,
         temperature: float = 0.0,
     ):
-        print(f"[{_ts()}] [INIT] Creating RAG Pipeline...")
-        print(f"[{_ts()}]   - chunk_size: {chunk_size}")
-        print(f"[{_ts()}]   - chunk_overlap: {chunk_overlap}")
-        print(f"[{_ts()}]   - top_k: {top_k}")
-        print(f"[{_ts()}]   - temperature: {temperature}")
+        _log("[INIT] Creating RAG Pipeline...")
+        _log(f"  - chunk_size: {chunk_size}")
+        _log(f"  - chunk_overlap: {chunk_overlap}")
+        _log(f"  - top_k: {top_k}")
+        _log(f"  - temperature: {temperature}")
 
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
         self.top_k = top_k
         self.temperature = temperature
-        print(f"[{_ts()}] [INIT] Attributes assigned. chunk_size={self.chunk_size}")
+        _log(f"[INIT] Attributes assigned. chunk_size={self.chunk_size}")
 
         # Create embeddings
-        print(f"[{_ts()}] [STEP 1/5] Loading embedding model...")
+        _log("[STEP 1/5] Loading embedding model...")
 
-        # Determine optimal device
         device = "cuda" if torch.cuda.is_available() else "cpu"
-        print(f"[{_ts()}]   -> Using device mapping: {device}")
+        _log(f"  -> Using device mapping: {device}")
 
         t0 = time.time()
         embeddings = HuggingFaceEmbeddings(
@@ -75,33 +80,28 @@ class RAGPipeline:
             model_kwargs={"device": device},
             encode_kwargs={"normalize_embeddings": True},
         )
-        print(f"[{_ts()}] [TIME] Embedding model loaded in {time.time() - t0:.1f}s")
+        _log(f"[TIME] Embedding model loaded in {time.time() - t0:.1f}s")
 
-        # Model short name for cache key to avoid mixing embeddings
         model_short = "bge-base"
         persist_dir = f"./chroma_db/db_{model_short}_{self.chunk_size}_{self.chunk_overlap}"
-        print(f"[{_ts()}] [STEP 2-3] persist_dir={persist_dir}")
+        _log(f"[STEP 2-3] persist_dir={persist_dir}")
         self.vector_store = self._load_or_create_vector_store(embeddings, persist_dir)
 
-        # Create retriever
-        print(f"[{_ts()}] [STEP 3b] Creating retriever (top_k={self.top_k})...")
+        _log(f"[STEP 3b] Creating retriever (top_k={self.top_k})...")
         self.retriever = self.vector_store.as_retriever(
             search_type="similarity", search_kwargs={"k": self.top_k}
         )
-        print(f"[{_ts()}] [STEP 3b] Retriever created.")
+        _log("[STEP 3b] Retriever created.")
 
-        # Cross-encoder re-ranker (lazy loaded)
         self._reranker = None
 
-        # Initialize LLM
-        print(f"[{_ts()}] [STEP 4/5] Initializing Groq LLM...")
+        _log("[STEP 4/5] Initializing Groq LLM...")
         self._init_llm()
-        print(f"[{_ts()}]   -> Using model: {self.model_name}")
+        _log(f"  -> Using model: {self.model_name}")
 
-        # Build query chain
-        print(f"[{_ts()}] [STEP 5/5] Building RAG query chain...")
+        _log("[STEP 5/5] Building RAG query chain...")
         self._build_chain()
-        print(f"[{_ts()}] [INIT] RAG Pipeline ready!\n")
+        _log("[INIT] RAG Pipeline ready!\n")
 
     def _load_documents(self) -> List:
         """Load all PDFs from data and data2 directories (deduplicated by basename)."""
@@ -117,19 +117,19 @@ class RAGPipeline:
         for d in search_dirs:
             label = os.path.basename(d)
             if not os.path.isdir(d):
-                print(f"[{_ts()}] [LOAD] Directory '{label}/' not found, skipping")
+                _log(f" [LOAD] Directory '{label}/' not found, skipping")
                 continue
-            print(f"[{_ts()}] [LOAD] Scanning '{label}/' directory...")
+            _log(f" [LOAD] Scanning '{label}/' directory...")
             found = glob.glob(os.path.join(d, "*.pdf"))
             for f in sorted(found):
                 bn = os.path.basename(f)
                 if bn in seen_basenames:
-                    print(f"[{_ts()}] [LOAD]   SKIPPING duplicate: {label}/{bn} (already loaded from other dir)")
+                    _log(f" [LOAD]   SKIPPING duplicate: {label}/{bn} (already loaded from other dir)")
                     continue
                 seen_basenames.add(bn)
                 pdf_files.append(f)
-                print(f"[{_ts()}] [LOAD]   FOUND: {label}/{bn}")
-            print(f"[{_ts()}] [LOAD] '{label}/' -> {len(found)} PDFs ({len([f for f in found if os.path.basename(f) not in seen_basenames or f == found[-1]])} new)")
+                _log(f" [LOAD]   FOUND: {label}/{bn}")
+            _log(f" [LOAD] '{label}/' -> {len(found)} PDFs ({len([f for f in found if os.path.basename(f) not in seen_basenames or f == found[-1]])} new)")
 
         if not pdf_files:
             raise FileNotFoundError(f"No PDF files found in data/ or data2/")
@@ -139,27 +139,27 @@ class RAGPipeline:
         total_start = time.time()
         for pdf_file in pdf_files:
             bn = os.path.basename(pdf_file)
-            print(f"[{_ts()}] [LOAD] Parsing {bn} ...")
+            _log(f" [LOAD] Parsing {bn} ...")
             t0 = time.time()
             loader = PyPDFLoader(pdf_file)
             docs = loader.load()
             elapsed = time.time() - t0
             documents.extend(docs)
-            print(f"[{_ts()}] [LOAD]   -> {len(docs)} pages in {elapsed:.1f}s from {bn}")
-        print(f"[{_ts()}] [LOAD] TOTAL: {len(documents)} pages from {len(pdf_files)} PDFs in {time.time() - total_start:.1f}s")
+            _log(f" [LOAD]   -> {len(docs)} pages in {elapsed:.1f}s from {bn}")
+        _log(f" [LOAD] TOTAL: {len(documents)} pages from {len(pdf_files)} PDFs in {time.time() - total_start:.1f}s")
 
         return documents
 
     def _create_vector_store(self, embeddings, persist_dir: str) -> Chroma:
         """Create and persist a fresh vector store from PDFs."""
         # Load and process PDFs
-        print(f"[{_ts()}] [STEP 2/5] Loading PDF documents...")
+        _log(f" [STEP 2/5] Loading PDF documents...")
         t0 = time.time()
         self.documents = self._load_documents()
-        print(f"[{_ts()}] [TIME] PDF loading took {time.time() - t0:.1f}s")
+        _log(f" [TIME] PDF loading took {time.time() - t0:.1f}s")
 
         # Create text splitter
-        print(f"[{_ts()}] [STEP 3/5] Splitting documents into chunks...")
+        _log(f" [STEP 3/5] Splitting documents into chunks...")
         text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=self.chunk_size,
             chunk_overlap=self.chunk_overlap,
@@ -174,10 +174,11 @@ class RAGPipeline:
         # Split documents into chunks
         t1 = time.time()
         self.chunks = text_splitter.split_documents(self.documents)
-        print(f"[{_ts()}]   -> Created {len(self.chunks)} chunks in {time.time() - t1:.1f}s")
+        _log(f"   -> Created {len(self.chunks)} chunks in {time.time() - t1:.1f}s")
 
-        print(f"[{_ts()}]   -> Creating and persisting vector store in {persist_dir}...")
-        print(f"[{_ts()}]   -> Embedding {len(self.chunks)} chunks with bge-base-en-v1.5 (this is the slow step)...")
+        _log(f"   -> Creating and persisting vector store in {persist_dir}...")
+        _log(f"   -> Embedding {len(self.chunks)} chunks with bge-base-en-v1.5 (this is the slow step)...")
+        sys.stdout.flush()  # ensure the above is visible before the long embedding call
         t2 = time.time()
         vector_store = Chroma.from_documents(
             documents=self.chunks,
@@ -185,7 +186,7 @@ class RAGPipeline:
             collection_name="f1_regulations",
             persist_directory=persist_dir,
         )
-        print(f"[{_ts()}]   -> Vector store created with {len(self.chunks)} vectors in {time.time() - t2:.1f}s")
+        _log(f"   -> Vector store created with {len(self.chunks)} vectors in {time.time() - t2:.1f}s")
         return vector_store
 
     def _load_or_create_vector_store(self, embeddings, persist_dir: str) -> Chroma:
@@ -193,8 +194,8 @@ class RAGPipeline:
         db_path = os.path.join(persist_dir, "chroma.sqlite3")
 
         if os.path.exists(db_path):
-            print(f"[{_ts()}] [CACHE] Found existing vector store at {persist_dir}")
-            print(f"[{_ts()}] [CACHE] Loading Chroma from {persist_dir}...")
+            _log(f" [CACHE] Found existing vector store at {persist_dir}")
+            _log(f" [CACHE] Loading Chroma from {persist_dir}...")
             t0 = time.time()
             vector_store = Chroma(
                 collection_name="f1_regulations",
@@ -206,21 +207,21 @@ class RAGPipeline:
 
             try:
                 vector_count = vector_store._collection.count()
-                print(f"[{_ts()}] [CACHE] Existing vector count: {vector_count} (loaded in {time.time() - t0:.1f}s)")
+                _log(f" [CACHE] Existing vector count: {vector_count} (loaded in {time.time() - t0:.1f}s)")
             except Exception as e:
-                print(f"[{_ts()}] [WARN] Could not read vector count from persisted DB: {e}")
+                _log(f" [WARN] Could not read vector count from persisted DB: {e}")
                 vector_count = 0
 
             if vector_count > 0:
-                print(f"[{_ts()}] [CACHE] Vector store loaded successfully.")
+                _log(f" [CACHE] Vector store loaded successfully.")
                 return vector_store
 
-            print(f"[{_ts()}] [WARN] Persisted vector store is empty. Rebuilding index from PDFs...")
+            _log(f" [WARN] Persisted vector store is empty. Rebuilding index from PDFs...")
             try:
                 shutil.rmtree(persist_dir)
-                print(f"[{_ts()}]   -> Removed stale index directory: {persist_dir}")
+                _log(f"   -> Removed stale index directory: {persist_dir}")
             except Exception as e:
-                print(f"[{_ts()}] [WARN] Could not remove stale index directory: {e}")
+                _log(f" [WARN] Could not remove stale index directory: {e}")
 
         return self._create_vector_store(embeddings, persist_dir)
 
@@ -244,15 +245,15 @@ class RAGPipeline:
                     api_key=api_key,
                 )
                 # Warm up once at startup so first user query is fast.
-                print(f"[{_ts()}]   -> Warming up model '{model_name}'...")
+                _log(f"   -> Warming up model '{model_name}'...")
                 t0 = time.time()
                 self.llm.invoke("Hello")
-                print(f"[{_ts()}]   -> Model '{model_name}' warmed up in {time.time() - t0:.1f}s")
+                _log(f"   -> Model '{model_name}' warmed up in {time.time() - t0:.1f}s")
 
                 self.model_name = model_name
                 break
             except Exception as e:
-                print(f"[{_ts()}] [WARN] Model {model_name} not available: {e}")
+                _log(f" [WARN] Model {model_name} not available: {e}")
                 continue
         else:
             raise RuntimeError(
@@ -261,10 +262,10 @@ class RAGPipeline:
 
     def _get_reranker(self) -> CrossEncoder:
         if self._reranker is None:
-            print(f"[{_ts()}]   -> Loading cross-encoder re-ranker (BAAI/bge-reranker-base)...")
+            _log(f"   -> Loading cross-encoder re-ranker (BAAI/bge-reranker-base)...")
             t0 = time.time()
             self._reranker = CrossEncoder("BAAI/bge-reranker-base")
-            print(f"[{_ts()}]   -> Re-ranker loaded in {time.time() - t0:.1f}s")
+            _log(f"   -> Re-ranker loaded in {time.time() - t0:.1f}s")
         return self._reranker
 
     def _rerank_docs(self, query: str, docs_with_scores: list) -> list:
@@ -281,7 +282,7 @@ class RAGPipeline:
             scored.sort(key=lambda x: x[1], reverse=True)
             return [(doc, float(score)) for doc, score in scored]
         except Exception as e:
-            print(f"  -> [WARN] Re-ranking failed: {e}. Using original order.")
+            _log(f"[WARN] Re-ranking failed: {e}. Using original order.")
             return docs_with_scores
 
     def _build_chain(self):
@@ -327,7 +328,7 @@ Answer:"""
 
         start = time.time()
         result = "\n\n".join(doc.page_content for doc in docs)
-        print(f"  -> [TIMING] Document formatting took {time.time() - start:.6f}s")
+            _log(f"[TIME] Document formatting took {time.time() - start:.6f}s")
         return result
 
     def get_last_chunks(self) -> list:
@@ -338,8 +339,8 @@ Answer:"""
         start_time = time.time()
 
         initial_k = min(self.top_k * 2, 15)
-        print(f"[{_ts()}] [QUERY START] Question: {question}")
-        print(f"[{_ts()}] [QUERY] Retrieving top-{initial_k} documents (will re-rank to top-{self.top_k})...")
+        _log(f" [QUERY START] Question: {question}")
+        _log(f" [QUERY] Retrieving top-{initial_k} documents (will re-rank to top-{self.top_k})...")
 
         try:
             retr_start = time.time()
@@ -347,16 +348,16 @@ Answer:"""
                 question, k=initial_k
             )
             retr_end = time.time()
-            print(f"[{_ts()}] [STAGE 1/5] Initial retrieval complete. Documents found: {len(results)}")
-            print(f"[{_ts()}] [TIME] Vector search took {retr_end - retr_start:.3f}s")
+            _log(f" [STAGE 1/5] Initial retrieval complete. Documents found: {len(results)}")
+            _log(f" [TIME] Vector search took {retr_end - retr_start:.3f}s")
 
             if results:
                 rerank_start = time.time()
                 reranked = self._rerank_docs(question, results)
                 top_results = reranked[:self.top_k]
                 rerank_end = time.time()
-                print(f"[{_ts()}] [STAGE 2/5] Re-ranking complete. Kept top-{self.top_k} of {len(reranked)}.")
-                print(f"[{_ts()}] [TIME] Re-ranking took {rerank_end - rerank_start:.3f}s")
+                _log(f" [STAGE 2/5] Re-ranking complete. Kept top-{self.top_k} of {len(reranked)}.")
+                _log(f" [TIME] Re-ranking took {rerank_end - rerank_start:.3f}s")
             else:
                 top_results = []
 
@@ -371,46 +372,48 @@ Answer:"""
                 for doc, score in top_results
             ]
         except Exception as e:
-            print(f"[{_ts()}] [STAGE 1/5 ERROR] Retrieval failed: {e}")
+            _log(f" [STAGE 1/5 ERROR] Retrieval failed: {e}")
             import traceback
             traceback.print_exc()
+            sys.stdout.flush()
             self._last_chunks = []
             docs = []
 
         if not docs:
-            print(f"[{_ts()}] [STAGE 3/5] No retrieved context chunks. Skipping LLM invocation.")
-            print(f"[{_ts()}] [TIME] Query finished in {time.time() - start_time:.3f}s")
-            print(f"[{_ts()}] [QUERY END]\n")
+            _log(f" [STAGE 3/5] No retrieved context chunks. Skipping LLM invocation.")
+            _log(f" [TIME] Query finished in {time.time() - start_time:.3f}s")
+            _log(f" [QUERY END]\n")
             return "Not found in regulations."
 
         try:
-            print(f"[{_ts()}] [STAGE 3/5] Preparing LLM chain input...")
+            _log(f" [STAGE 3/5] Preparing LLM chain input...")
             llm_prep_start = time.time()
 
             chain_input = {
                 "context": docs,
                 "question": question,
             }
-            print(f"[{_ts()}] [TIME] Chain input preparation took {time.time() - llm_prep_start:.6f}s")
+            _log(f" [TIME] Chain input preparation took {time.time() - llm_prep_start:.6f}s")
 
-            print(f"[{_ts()}] [STAGE 4/5] Invoking LLM chain (model: {self.model_name})...")
+            _log(f" [STAGE 4/5] Invoking LLM chain (model: {self.model_name})...")
             llm_invoke_start = time.time()
 
             response = self.chain.invoke(chain_input)
             llm_invoke_end = time.time()
 
-            print(f"[{_ts()}] [STAGE 5/5] LLM response received.")
-            print(f"[{_ts()}] [TIME] chain.invoke() took {llm_invoke_end - llm_invoke_start:.3f}s")
+            _log(f" [STAGE 5/5] LLM response received.")
+            _log(f" [TIME] chain.invoke() took {llm_invoke_end - llm_invoke_start:.3f}s")
 
             result = response.content if hasattr(response, "content") else str(response)
             if not result:
-                print(f"[{_ts()}] [WARN] LLM returned an empty response string.")
+                _log(f" [WARN] LLM returned an empty response string.")
 
-            print(f"[{_ts()}] [TIME] Query finished in {time.time() - start_time:.3f}s")
-            print(f"[{_ts()}] [QUERY END]\n")
+            _log(f" [TIME] Query finished in {time.time() - start_time:.3f}s")
+            _log(f" [QUERY END]\n")
             return result
         except Exception as e:
-            print(f"[{_ts()}] [ERROR] Query failed at LLM/Chain stage: {e}")
+            _log(f" [ERROR] Query failed at LLM/Chain stage: {e}")
             import traceback
             traceback.print_exc()
+            sys.stdout.flush()
             return "Error generating response."
