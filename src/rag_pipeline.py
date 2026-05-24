@@ -191,16 +191,38 @@ class RAGPipeline:
 
     def _load_or_create_vector_store(self, embeddings, persist_dir: str) -> Chroma:
         """Load persisted vector store if valid, otherwise rebuild from source PDFs."""
-        db_path = os.path.join(persist_dir, "chroma.sqlite3")
+        real_persist_dir = persist_dir
+
+        # If the vector store lives on a read-only volume, copy to a writable temp dir
+        test_file = os.path.join(persist_dir, "chroma.sqlite3")
+        if os.path.exists(test_file):
+            try:
+                with open(os.path.join(persist_dir, ".write_test"), "w") as f:
+                    f.write("test")
+                os.remove(os.path.join(persist_dir, ".write_test"))
+                writable = True
+            except (OSError, PermissionError):
+                writable = False
+
+            if not writable:
+                import tempfile
+                tmp = tempfile.mkdtemp(prefix="chroma_")
+                _log(f" [CACHE] Volume is read-only. Copying to writable tmp: {tmp}")
+                dest = os.path.join(tmp, os.path.basename(persist_dir))
+                shutil.copytree(persist_dir, dest)
+                real_persist_dir = dest
+                _log(f" [CACHE] Copied to {real_persist_dir}")
+
+        db_path = os.path.join(real_persist_dir, "chroma.sqlite3")
 
         if os.path.exists(db_path):
-            _log(f" [CACHE] Found existing vector store at {persist_dir}")
-            _log(f" [CACHE] Loading Chroma from {persist_dir}...")
+            _log(f" [CACHE] Found existing vector store at {real_persist_dir}")
+            _log(f" [CACHE] Loading Chroma from {real_persist_dir}...")
             t0 = time.time()
             vector_store = Chroma(
                 collection_name="f1_regulations",
                 embedding_function=embeddings,
-                persist_directory=persist_dir,
+                persist_directory=real_persist_dir,
             )
             # Dummy default so external stats calls don't fail.
             self.chunks = []
@@ -218,12 +240,12 @@ class RAGPipeline:
 
             _log(f" [WARN] Persisted vector store is empty. Rebuilding index from PDFs...")
             try:
-                shutil.rmtree(persist_dir)
-                _log(f"   -> Removed stale index directory: {persist_dir}")
+                shutil.rmtree(real_persist_dir)
+                _log(f"   -> Removed stale index directory: {real_persist_dir}")
             except Exception as e:
                 _log(f" [WARN] Could not remove stale index directory: {e}")
 
-        return self._create_vector_store(embeddings, persist_dir)
+        return self._create_vector_store(embeddings, real_persist_dir)
 
     def _init_llm(self):
         """Initialize Groq LLM with fallback model."""
