@@ -1,474 +1,631 @@
 <!DOCTYPE html>
-
-<html class="dark" lang="en"><head>
+<html class="dark" lang="en">
+<head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>F1 REG / RAG - Dashboard</title>
+<title>F1 REG / CHAT</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&amp;family=Inter:wght@400;500&amp;family=Space+Grotesk:wght@400;600&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary-fixed": "#5d5f5f",
-                        "surface-container-high": "#2a2a2a",
-                        "surface-container-lowest": "#0e0e0e",
-                        "inverse-on-surface": "#303030",
-                        "surface-bright": "#393939",
-                        "surface-container": "#1f1f1f",
-                        "tertiary-container": "#929090",
-                        "on-surface": "#e2e2e2",
-                        "tertiary": "#e5e2e1",
-                        "secondary-fixed-dim": "#acabab",
-                        "on-secondary-fixed-variant": "#3b3b3b",
-                        "background": "#000000",
-                        "on-tertiary-fixed-variant": "#e5e2e1",
-                        "surface": "#000000",
-                        "inverse-primary": "#5d5f5f",
-                        "on-error": "#690005",
-                        "on-primary": "#000000",
-                        "surface-tint": "#c6c6c7",
-                        "on-tertiary-container": "#000000",
-                        "inverse-surface": "#e2e2e2",
-                        "on-primary-fixed-variant": "#e2e2e2",
-                        "on-secondary-fixed": "#1b1c1c",
-                        "outline-variant": "#222222",
-                        "primary-fixed-dim": "#454747",
-                        "secondary-container": "#464747",
-                        "error-container": "#93000a",
-                        "on-secondary-container": "#e4e2e2",
-                        "on-error-container": "#ffdad6",
-                        "on-primary-fixed": "#ffffff",
-                        "on-primary-container": "#000000",
-                        "surface-variant": "#111111",
-                        "on-secondary": "#1b1c1c",
-                        "surface-dim": "#000000",
-                        "primary": "#ffffff",
-                        "on-surface-variant": "#c6c6c6",
-                        "error": "#ffb4ab",
-                        "tertiary-fixed-dim": "#474746",
-                        "surface-container-highest": "#111111",
-                        "on-background": "#ffffff",
-                        "on-tertiary": "#1b1c1c",
-                        "tertiary-fixed": "#5f5e5e",
-                        "on-tertiary-fixed": "#ffffff",
-                        "primary-container": "#d4d4d4",
-                        "surface-container-low": "#0a0a0a",
-                        "outline": "#666666",
-                        "secondary-fixed": "#c7c6c6",
-                        "secondary": "#c7c6c6"
-                    },
-                    fontFamily: {
-                        "mono": ["IBM Plex Mono", "monospace"],
-                        "sans": ["Inter", "sans-serif"],
-                        "headline": ["Space Grotesk", "sans-serif"],
-                        "body": ["Inter", "sans-serif"],
-                        "label": ["Space Grotesk", "sans-serif"]
-                    },
-                    borderRadius: {
-                        "DEFAULT": "0px",
-                        "lg": "0px",
-                        "xl": "0px",
-                        "full": "9999px"
-                    },
-                },
-            },
-        }
-    </script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,0&amp;display=swap" rel="stylesheet"/>
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: { extend: {
+    colors: {
+      paper: "#000000",
+      "paper-1": "#0a0a0a",
+      "paper-2": "#111111",
+      "paper-3": "#1a1a1a",
+      outline: "#222222",
+      "outline-1": "#2a2a2a",
+      muted: "#666666",
+      "muted-1": "#555555",
+      ink: "#ffffff",
+      "ink-1": "#e2e2e2",
+      "ink-2": "#a0a0a0",
+      accent: "#ffffff",
+      error: "#ff4444",
+      "error-bg": "#330000",
+    },
+    fontFamily: {
+      mono: ["IBM Plex Mono", "monospace"],
+      sans: ["Inter", "sans-serif"],
+    },
+  }}
+};
+</script>
 <style>
-        body {
-            background-color: #000000;
-            color: #ffffff;
-            font-family: 'Inter', sans-serif;
-            overflow: hidden;
-        }
-        .mono { font-family: 'IBM Plex Mono', monospace; }
-        .border-base { border-color: #1a1a1a; }
-        .border-panel { border-color: #222222; }
-        
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #111111; }
-        ::-webkit-scrollbar-thumb { background: #ffffff; border: 1px solid #000000; }
+  body {
+    background: #000;
+    color: #fff;
+    font-family: "Inter", sans-serif;
+    overflow: hidden;
+    height: 100vh;
+  }
+  .mono { font-family: "IBM Plex Mono", monospace; }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: #0a0a0a; }
+  ::-webkit-scrollbar-thumb { background: #333; }
 
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            font-size: 16px;
-        }
-    </style>
+  .message-enter {
+    animation: fadeSlideIn 0.2s ease-out;
+  }
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .typing-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: #666;
+    border-radius: 50%;
+    animation: dotPulse 1.4s infinite ease-in-out;
+  }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dotPulse {
+    0%, 80%, 100% { opacity: 0.2; }
+    40% { opacity: 1; }
+  }
+
+  .pulse-live {
+    animation: pulseLive 2s infinite;
+  }
+  @keyframes pulseLive {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .sidebar-nav {
+    transition: transform 0.2s ease;
+  }
+  @media (max-width: 1024px) {
+    .sidebar-nav { transform: translateX(-100%); position: fixed; z-index: 30; }
+    .sidebar-nav.open { transform: translateX(0); }
+  }
+  @media (max-width: 1024px) {
+    #main-panel { margin-right: 0 !important; }
+  }
+  @media (max-width: 768px) {
+    .context-panel { transform: translateX(100%); position: fixed; z-index: 25; }
+    .context-panel.open { transform: translateX(0); }
+  }
+  /* Smooth scroll for chat log */
+  #chat-log { scroll-behavior: smooth; }
+</style>
 </head>
-<body class="flex h-screen w-full overflow-hidden bg-black text-white">
-<!-- LEFT PANEL: SIDENAVBAR & SYSTEM STATS -->
-<aside class="w-[240px] h-full flex flex-col border-r border-zinc-900 bg-black shrink-0 fixed left-0 top-0 z-20">
-<!-- Header Section -->
-<div class="p-4 border-b border-zinc-900">
-<h1 class="text-[12px] font-semibold tracking-[0.1em] font-mono text-white uppercase">F1 REG / RAG</h1>
-<p class="text-[10px] font-mono text-zinc-500 uppercase mt-1">POWERED BY OCA + PHI3</p>
-</div>
-<!-- Hyperparameters Section -->
-<div class="p-4 flex flex-col gap-4">
-<h2 class="text-[11px] font-semibold tracking-[0.1em] font-mono uppercase text-zinc-500">HYPERPARAMETERS</h2>
-<div class="grid grid-cols-2 gap-4">
-<div>
-<span class="block text-[10px] font-mono text-zinc-500 uppercase">CHUNKS</span>
-<span id="ctrl-chunk-size" class="block text-sm font-mono text-white">600</span>
-</div>
-<div>
-<span class="block text-[10px] font-mono text-zinc-500 uppercase">OVERLAP</span>
-<span id="ctrl-chunk-overlap" class="block text-sm font-mono text-white">80</span>
-</div>
-<div>
-<span class="block text-[10px] font-mono text-zinc-500 uppercase">TEMP</span>
-<span id="ctrl-temperature" class="block text-sm font-mono text-white">0.2</span>
-</div>
-<div>
-<span class="block text-[10px] font-mono text-zinc-500 uppercase">TOP_K</span>
-<span id="ctrl-top-k" class="block text-sm font-mono text-white">4</span>
-</div>
-</div>
-</div>
-<!-- Optimization History (Sparkline) -->
-<div class="p-4 mt-2">
-<h2 class="text-[11px] font-semibold tracking-[0.1em] font-mono uppercase text-zinc-500 mb-4">OPTIMIZATION HISTORY</h2>
-<div class="h-20 w-full relative border-l border-b border-zinc-800 flex items-end">
-<!-- Simple SVG Sparkline -->
-<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 100 40">
-<path d="M0 35 L10 32 L20 34 L30 25 L40 28 L50 15 L60 18 L70 10 L80 12 L90 5 L100 6" fill="none" stroke="white" stroke-width="1.5"></path>
-</svg>
-<div class="absolute -left-6 top-0 h-full flex flex-col justify-between text-[8px] font-mono text-zinc-600">
-<span>0.85</span>
-<span>0.30</span>
-</div>
-<div class="absolute -bottom-4 w-full flex justify-between text-[8px] font-mono text-zinc-600">
-<span>ITERATIONS</span>
-<span>FITNESS</span>
-</div>
-</div>
-</div>
-<!-- Stat Pills -->
-<div class="p-4 space-y-3 mt-4">
-<div class="border border-zinc-800 p-2 flex flex-col">
-<span class="text-[10px] font-mono text-zinc-500 uppercase">BEST SCORE</span>
-<span class="text-lg font-mono text-white">0.847</span>
-</div>
-<div class="border border-zinc-800 p-2 flex flex-col">
-<span class="text-[10px] font-mono text-zinc-500 uppercase">ITERATIONS</span>
-<span class="text-lg font-mono text-white">50</span>
-</div>
-<div class="border border-zinc-800 p-2 flex flex-col">
-<span class="text-[10px] font-mono text-zinc-500 uppercase">CALLS USED</span>
-<span class="text-lg font-mono text-white">47</span>
-</div>
-</div>
-<!-- Sidebar Navigation (Footer area) -->
-<div class="mt-auto p-4 border-t border-zinc-900">
-<a class="flex items-center gap-2 text-[10px] font-mono text-zinc-500 hover:text-white transition-colors duration-0 uppercase" href="#">
-<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
-<span>FULL REPORT</span>
-</a>
-</div>
+<body>
+
+<!-- MOBILE OVERLAY -->
+<div id="sidebar-overlay" class="fixed inset-0 bg-black/60 z-20 hidden" onclick="closeSidebar()"></div>
+<div id="context-overlay" class="fixed inset-0 bg-black/60 z-20 hidden" onclick="closeContext()"></div>
+
+<!-- ── LEFT SIDEBAR ── -->
+<aside id="sidebar" class="sidebar-nav w-[240px] h-full flex flex-col border-r border-outline bg-paper fixed left-0 top-0 z-30">
+  <div class="p-4 border-b border-outline flex items-center justify-between">
+    <div>
+      <h1 class="text-[11px] font-semibold tracking-[0.15em] mono text-ink uppercase">F1 REG / RAG</h1>
+      <p class="text-[9px] mono text-muted uppercase mt-0.5">GROQ · BGE-BASE · RE-RANKER</p>
+    </div>
+    <button onclick="closeSidebar()" class="lg:hidden text-muted hover:text-ink material-symbols-outlined" style="font-size:18px">close</button>
+  </div>
+
+  <div class="p-4 flex flex-col gap-4">
+    <h2 class="text-[10px] font-semibold tracking-[0.1em] mono uppercase text-muted">HYPERPARAMETERS</h2>
+    <div class="grid grid-cols-2 gap-3">
+      <div><span class="block text-[9px] mono text-muted uppercase">CHUNK</span><span id="ctrl-chunk-size" class="block text-sm mono text-ink">--</span></div>
+      <div><span class="block text-[9px] mono text-muted uppercase">OVERLAP</span><span id="ctrl-chunk-overlap" class="block text-sm mono text-ink">--</span></div>
+      <div><span class="block text-[9px] mono text-muted uppercase">TEMP</span><span id="ctrl-temperature" class="block text-sm mono text-ink">--</span></div>
+      <div><span class="block text-[9px] mono text-muted uppercase">TOP K</span><span id="ctrl-top-k" class="block text-sm mono text-ink">--</span></div>
+    </div>
+  </div>
+
+  <div class="p-4 space-y-2">
+    <div class="border border-outline p-3 flex flex-col">
+      <span class="text-[9px] mono text-muted uppercase">BEST SCORE</span>
+      <span id="best-score" class="text-lg mono text-ink">--</span>
+    </div>
+    <div class="border border-outline p-3 flex flex-col">
+      <span class="text-[9px] mono text-muted uppercase">ITERATIONS</span>
+      <span id="iterations" class="text-lg mono text-ink">--</span>
+    </div>
+    <div class="border border-outline p-3 flex flex-col">
+      <span class="text-[9px] mono text-muted uppercase">CALLS USED</span>
+      <span id="calls-used" class="text-lg mono text-ink">--</span>
+    </div>
+  </div>
+
+  <div class="p-4 mt-auto border-t border-outline">
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-2">
+        <span id="model-indicator" class="w-1.5 h-1.5 bg-muted rounded-full"></span>
+        <span id="model-name" class="text-[10px] mono text-muted uppercase">CHECKING...</span>
+      </div>
+      <a href="/bench" class="flex items-center gap-2 text-[10px] mono text-muted hover:text-ink transition-colors uppercase">
+        <span class="material-symbols-outlined" style="font-size:14px">monitoring</span>
+        <span>BENCHMARK DASHBOARD</span>
+      </a>
+    </div>
+  </div>
 </aside>
-<!-- MAIN CENTER PANEL: CHAT INTERFACE -->
-<main class="ml-[240px] mr-[280px] flex-1 flex flex-col h-full bg-black relative">
-<!-- TopAppBar Content -->
-<header class="h-12 border-b border-zinc-900 flex justify-between items-center px-4 shrink-0">
-<div class="flex items-center gap-2">
-<span class="text-[11px] font-mono text-zinc-500 uppercase">DASHBOARD / CHAT</span>
-</div>
-<div class="flex items-center gap-4">
-<div class="flex items-center gap-2 text-[11px] font-mono text-white uppercase font-bold">
-<span class="w-[4px] h-[4px] bg-white"></span>
-<span id="model-status">PHI3 ONLINE</span>
-</div>
-<div class="flex items-center gap-3 text-zinc-500">
-<span class="material-symbols-outlined hover:text-white cursor-pointer" data-icon="settings">settings</span>
-<span class="material-symbols-outlined hover:text-white cursor-pointer" data-icon="terminal">terminal</span>
-</div>
-</div>
-</header>
-<!-- Chat Area -->
-<section id="chat-log" class="flex-1 overflow-y-auto p-6 space-y-8">
-<!-- User Message -->
-<div class="flex flex-col items-end gap-1">
-<div class="bg-white text-black p-4 max-w-[80%] text-sm font-sans leading-relaxed">
-                    How many power unit elements are allowed per season?
-                </div>
-<span class="text-[10px] font-mono text-zinc-500 uppercase">USER — 14:02:11</span>
-</div>
-<!-- Bot Message -->
-<div class="flex flex-col items-start gap-1">
-<div class="bg-zinc-900 text-white p-4 max-w-[85%] border border-zinc-800 text-sm font-sans leading-relaxed">
-                    According to Article 28.2 of the FIA Sporting Regulations, each driver is permitted to use a maximum of 4 internal combustion engines, 4 motor generator units-heat, and 4 energy stores during a Championship season. Use of additional elements results in a grid penalty.
-                </div>
-<span class="text-[10px] font-mono text-zinc-500 uppercase">PHI3 — 14:02:12</span>
-</div>
-</section>
-<!-- Input Bar -->
-<footer class="p-4 border-t border-zinc-900 bg-black">
-<div class="flex gap-2">
-<div class="flex-1 bg-[#111111] border border-zinc-800 flex items-center px-4">
-<input id="chat-input" class="w-full bg-transparent border-none text-white font-mono text-sm focus:ring-0 placeholder-zinc-700" placeholder="QUERY SYSTEM REGULATIONS..." type="text"/>
-</div>
-<button id="send-btn" class="bg-white text-black px-6 py-2 text-[12px] font-semibold font-mono uppercase rounded-[2px] hover:bg-zinc-200 transition-colors duration-0">
-                    SEND
-                </button>
-</div>
-</footer>
+
+<!-- ── MAIN CHAT PANEL ── -->
+<main id="main-panel" class="lg:ml-[240px] lg:mr-[280px] flex-1 flex flex-col h-full bg-paper relative" style="margin-left: 240px; margin-right: 280px;">
+
+  <!-- Top bar -->
+  <header class="h-11 border-b border-outline flex items-center justify-between px-4 shrink-0 bg-paper">
+    <div class="flex items-center gap-3">
+      <button onclick="toggleSidebar()" class="lg:hidden text-muted hover:text-ink material-symbols-outlined" style="font-size:18px">menu</button>
+      <span class="text-[10px] mono text-muted uppercase tracking-wider">CHAT</span>
+      <span id="doc-count" class="text-[9px] mono text-muted bg-paper-2 px-2 py-0.5 hidden">-- PDFS</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <span id="connection-status" class="flex items-center gap-1.5 text-[9px] mono text-muted">
+        <span class="w-1.5 h-1.5 bg-muted rounded-full pulse-live" id="status-dot"></span>
+        <span id="status-text">CONNECTING</span>
+      </span>
+      <button onclick="toggleContext()" class="lg:hidden text-muted hover:text-ink material-symbols-outlined" style="font-size:18px">sidebar</button>
+    </div>
+  </header>
+
+  <!-- Chat log -->
+  <section id="chat-log" class="flex-1 overflow-y-auto px-4 py-6 space-y-5">
+
+    <!-- Empty state (shown on load) -->
+    <div id="empty-state" class="flex flex-col items-center justify-center h-full text-center py-16">
+      <div class="w-12 h-12 border border-outline flex items-center justify-center mb-5">
+        <span class="material-symbols-outlined text-muted" style="font-size:24px">description</span>
+      </div>
+      <h2 class="text-sm mono text-ink font-semibold mb-2 tracking-wide">FIA REGULATIONS QUERY</h2>
+      <p class="text-[11px] mono text-muted max-w-md leading-relaxed mb-6">
+        Ask anything about FIA Formula 1 Sporting, Technical, or Financial Regulations.
+      </p>
+      <div id="example-pills" class="flex flex-wrap justify-center gap-2 max-w-lg">
+        <!-- Injected by JS -->
+      </div>
+      <div class="mt-8 text-[9px] mono text-muted flex items-center gap-3">
+        <span>ESC to focus input</span>
+        <span class="w-px h-3 bg-outline"></span>
+        <span>Enter to send</span>
+      </div>
+    </div>
+
+    <!-- Messages injected here by JS -->
+  </section>
+
+  <!-- Thinking indicator -->
+  <div id="thinking-indicator" class="hidden px-4 py-2 flex items-center gap-2 text-[10px] mono text-muted">
+    <div class="flex items-center gap-1">
+      <span class="typing-dot"></span>
+      <span class="typing-dot"></span>
+      <span class="typing-dot"></span>
+    </div>
+    <span>RETRIEVING & GENERATING</span>
+  </div>
+
+  <!-- Input bar -->
+  <footer class="p-3 border-t border-outline bg-paper">
+    <div class="flex gap-2 max-w-4xl mx-auto">
+      <div class="flex-1 bg-paper-2 border border-outline flex items-center px-3">
+        <span class="material-symbols-outlined text-muted mr-2" style="font-size:16px">search</span>
+        <input id="chat-input" class="w-full bg-transparent border-none text-ink mono text-sm focus:ring-0 placeholder-muted" placeholder="Ask a question about F1 regulations..." type="text" autofocus/>
+      </div>
+      <button id="send-btn" class="bg-ink text-paper px-5 py-2 text-[11px] font-semibold mono uppercase tracking-wider hover:opacity-80 transition-opacity disabled:opacity-30" disabled>
+        SEND
+      </button>
+    </div>
+  </footer>
 </main>
-<!-- RIGHT PANEL: CONTEXT & METADATA -->
-<aside class="w-[280px] h-full flex flex-col border-l border-zinc-900 bg-black shrink-0 fixed right-0 top-0">
-<div class="p-4 border-b border-zinc-900 h-12 flex items-center">
-<h2 class="text-[11px] font-semibold tracking-[0.1em] font-mono uppercase text-zinc-500">RETRIEVAL CONTEXT</h2>
-</div>
-<div id="chunks-container" class="p-4 flex-1 overflow-y-auto space-y-4">
-<div class="bg-[#0a0a0a] border border-zinc-800 p-4 text-[11px] font-mono text-zinc-500 uppercase">
-          No query yet. Retrieved chunks will appear here.
-        </div>
-</div>
-<!-- Footer: Current Parameters Grid -->
-<div class="p-4 border-t border-zinc-900 bg-[#050505]">
-<h3 class="text-[10px] font-mono text-zinc-600 uppercase mb-3">CURRENT SETTINGS</h3>
-<div id="params-used-display" class="grid grid-cols-2 gap-2 text-xs font-mono text-white">
-<div class="bg-[#111111] border border-zinc-800 p-2">
-<span class="block text-[8px] font-mono text-zinc-600 uppercase">SIZE</span>
-<span class="block text-xs font-mono text-white">600</span>
-</div>
-<div class="bg-[#111111] border border-zinc-800 p-2">
-<span class="block text-[8px] font-mono text-zinc-600 uppercase">OVER</span>
-<span class="block text-xs font-mono text-white">80</span>
-</div>
-<div class="bg-[#111111] border border-zinc-800 p-2">
-<span class="block text-[8px] font-mono text-zinc-600 uppercase">TEMP</span>
-<span class="block text-xs font-mono text-white">0.2</span>
-</div>
-<div class="bg-[#111111] border border-zinc-800 p-2">
-<span class="block text-[8px] font-mono text-zinc-600 uppercase">K</span>
-<span class="block text-xs font-mono text-white">4</span>
-</div>
-</div>
-</div>
+
+<!-- ── RIGHT CONTEXT PANEL ── -->
+<aside id="context-panel" class="context-panel w-[280px] h-full flex flex-col border-l border-outline bg-paper fixed right-0 top-0">
+  <div class="h-11 border-b border-outline flex items-center justify-between px-4">
+    <h2 class="text-[10px] font-semibold tracking-[0.1em] mono uppercase text-muted">RETRIEVAL CONTEXT</h2>
+    <button onclick="closeContext()" class="lg:hidden text-muted hover:text-ink material-symbols-outlined" style="font-size:18px">close</button>
+  </div>
+
+  <div id="chunks-container" class="flex-1 overflow-y-auto p-4 space-y-3">
+    <div id="chunks-empty" class="border border-dashed border-outline p-6 flex flex-col items-center text-center">
+      <span class="material-symbols-outlined text-muted mb-2" style="font-size:20px">frame_source</span>
+      <p class="text-[10px] mono text-muted">Send a query to see retrieved document chunks here.</p>
+    </div>
+  </div>
+
+  <div class="p-4 border-t border-outline bg-paper-1">
+    <h3 class="text-[9px] mono text-muted uppercase mb-2 tracking-wider">CURRENT SETTINGS</h3>
+    <div id="params-used-display" class="grid grid-cols-2 gap-1.5 text-[11px] mono">
+      <div class="bg-paper-2 border border-outline p-2">
+        <span class="block text-[7px] mono text-muted uppercase">SIZE</span>
+        <span id="param-size" class="text-ink">--</span>
+      </div>
+      <div class="bg-paper-2 border border-outline p-2">
+        <span class="block text-[7px] mono text-muted uppercase">OVER</span>
+        <span id="param-over" class="text-ink">--</span>
+      </div>
+      <div class="bg-paper-2 border border-outline p-2">
+        <span class="block text-[7px] mono text-muted uppercase">TEMP</span>
+        <span id="param-temp" class="text-ink">--</span>
+      </div>
+      <div class="bg-paper-2 border border-outline p-2">
+        <span class="block text-[7px] mono text-muted uppercase">K</span>
+        <span id="param-k" class="text-ink">--</span>
+      </div>
+    </div>
+  </div>
 </aside>
 
 <script>
-// ── CONFIG ────────────────────────────────────────────────────
+// ── CONFIG ──────────────────────────────────────────────────────
 const API_BASE = window.location.origin;
+const EXAMPLE_QUERIES = [
+  "What is the minimum weight of the car including the driver?",
+  "How many engines is each driver allowed per season?",
+  "What is the penalty for using an additional power unit element?",
+  "What is the maximum race distance in kilometres?",
+  "How long before the race must the starting grid be published?",
+  "What are the conditions under which a Safety Car can be deployed?",
+  "What is the minimum tyre pressure requirement during a race?",
+  "How many DRS zones are typically present on a circuit?",
+];
 
-// ── HEALTH CHECK ON LOAD ──────────────────────────────────────
+// ── DOM REFS ────────────────────────────────────────────────────
+const $ = (id) => document.getElementById(id);
+const chatLog = $("chat-log");
+const chatInput = $("chat-input");
+const sendBtn = $("send-btn");
+const emptyState = $("empty-state");
+const thinkingEl = $("thinking-indicator");
+
+// ── HEALTH CHECK ────────────────────────────────────────────────
 async function checkHealth() {
   try {
     const res = await fetch(`${API_BASE}/api/health`);
     const data = await res.json();
-    // Update model status indicator if element exists in your HTML
-    const statusEl = document.getElementById('model-status');
-    if (statusEl) statusEl.textContent = data.pdfs_loaded > 0 ? 'ONLINE' : 'NO PDF';
-  } catch(e) {
-    console.error('Health check failed:', e);
+    const statusText = data.status === "ok" ? "ONLINE" : "DEGRADED";
+    const statusDot = $("status-dot");
+    const statusLabel = $("status-text");
+    const modelName = $("model-name");
+    const modelIndicator = $("model-indicator");
+    const docCount = $("doc-count");
+
+    statusLabel.textContent = statusText;
+    statusDot.className = `w-1.5 h-1.5 rounded-full ${data.status === "ok" ? "bg-white pulse-live" : "bg-error"}`;
+
+    const pdfCount = data.pdfs_loaded || 0;
+    if (pdfCount > 0) {
+      docCount.textContent = `${pdfCount} PDF${pdfCount !== 1 ? "S" : ""}`;
+      docCount.classList.remove("hidden");
+    }
+
+    if (data.pdf_names && data.pdf_names.length > 0) {
+      // Try to extract model from the pipeline info
+    }
+
+    // Infer model name from pipeline (we know defaults)
+    modelName.textContent = "GROQ / BGE-BASE";
+    modelIndicator.className = "w-1.5 h-1.5 bg-white rounded-full pulse-live";
+  } catch (e) {
+    $("status-text").textContent = "OFFLINE";
+    $("status-dot").className = "w-1.5 h-1.5 bg-error rounded-full";
   }
 }
 
-// ── SEND QUERY ────────────────────────────────────────────────
-async function sendQuery(question) {
-  // Read hyperparameter values from DOM controls — adapt IDs to match your HTML
-  // Fallbacks applied, value or textContent depending if they are spans
-  const getVal = (id, fallback) => {
-      const el = document.getElementById(id);
-      if(!el) return fallback;
-      return el.value || el.textContent || fallback;
+// ── BENCHMARK STATE ─────────────────────────────────────────────
+let lastBenchState = null;
+
+async function fetchBenchState() {
+  try {
+    const res = await fetch(`${API_BASE}/api/benchmark/state`);
+    if (!res.ok) return;
+    const data = await res.json();
+    applyBenchState(data);
+  } catch (e) { /* silent */ }
+}
+
+function applyBenchState(data) {
+  lastBenchState = data;
+  const bp = data.best_params;
+  if (bp) {
+    setText("ctrl-chunk-size", bp.chunk_size ?? "--");
+    setText("ctrl-chunk-overlap", bp.chunk_overlap ?? "--");
+    setText("ctrl-temperature", bp.temperature != null ? bp.temperature.toFixed(2) : "--");
+    setText("ctrl-top-k", bp.top_k ?? "--");
+  }
+  setText("best-score", data.best_fitness != null ? data.best_fitness.toFixed(3) : "--");
+  setText("iterations", data.current_iter != null ? String(data.current_iter) : "--");
+  setText("calls-used", data.total_budget != null ? `${data.current_iter ?? 0} / ${data.total_budget}` : "--");
+}
+
+function setText(id, val) {
+  const el = $(id);
+  if (el) el.textContent = val;
+}
+
+// ── WEBSOCKET LIVE UPDATES ──────────────────────────────────────
+let ws = null;
+
+function connectWS() {
+  const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+  ws = new WebSocket(`${protocol}://${window.location.host}/api/ws/benchmark`);
+  ws.onmessage = (ev) => {
+    try {
+      const data = JSON.parse(ev.data);
+      if (data.type === "update" || data.type === "complete") {
+        applyBenchState(data);
+      }
+    } catch (e) { /* ignore */ }
   };
-  
+  ws.onclose = () => setTimeout(connectWS, 3000);
+  ws.onerror = () => { ws = null; };
+}
+
+// ── SAFE PARSE HELPERS ──────────────────────────────────────────
+function safeInt(val, fallback) {
+  const n = parseInt(String(val ?? "").replace(/[^0-9.-]/g, ""));
+  return Number.isFinite(n) ? n : fallback;
+}
+function safeFloat(val, fallback) {
+  const n = parseFloat(String(val ?? "").replace(/[^0-9.-]/g, ""));
+  return Number.isFinite(n) ? n : fallback;
+}
+
+// ── QUERY ───────────────────────────────────────────────────────
+async function sendQuery(question) {
   const params = {
     question,
-    chunk_size:    parseInt(getVal('ctrl-chunk-size', 600)),
-    chunk_overlap: parseInt(getVal('ctrl-chunk-overlap', 80)),
-    temperature:   parseFloat(getVal('ctrl-temperature', 0.2)),
-    top_k:         parseInt(getVal('ctrl-top-k', 4)),
+    chunk_size:    safeInt($("ctrl-chunk-size")?.textContent, 700),
+    chunk_overlap: safeInt($("ctrl-chunk-overlap")?.textContent, 100),
+    temperature:   safeFloat($("ctrl-temperature")?.textContent, 0.0),
+    top_k:         safeInt($("ctrl-top-k")?.textContent, 4),
   };
 
-  // Immediately show loading state in the chunk panel for this query.
-  renderChunksLoading(params.top_k);
+  // Show thinking, hide empty state
+  emptyState?.classList.add("hidden");
+  thinkingEl?.classList.remove("hidden");
+  sendBtn.disabled = true;
+  chatInput.disabled = true;
 
-  // Show thinking state — adapt selector to match your HTML's loading element
-  const thinkingEl = document.getElementById('thinking-indicator');
-  if (thinkingEl) thinkingEl.style.display = 'flex';
+  // Show loading in chunks panel
+  showChunksLoading(params.top_k);
 
   try {
     const res = await fetch(`${API_BASE}/api/query`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(params)
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(params),
     });
-
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
 
-    // Hide thinking state
-    if (thinkingEl) thinkingEl.style.display = 'none';
-
-    // Render bot message — adapt to your HTML's message rendering function
-    appendMessage('bot', data.answer);
-
-    // Populate retrieval context panel if it exists
+    thinkingEl?.classList.add("hidden");
+    appendMessage("bot", data.answer);
     renderChunks(data.chunks_retrieved);
-
-    // Update "parameters used" display
     updateParamsUsed(data.params_used);
 
-  } catch(err) {
-    if (thinkingEl) thinkingEl.style.display = 'none';
-    appendMessage('error', `[ ERROR ] ${err.message}`);
+    // Update sidebar params from actual response
+    if (data.params_used) {
+      setText("ctrl-chunk-size", data.params_used.chunk_size ?? "--");
+      setText("ctrl-chunk-overlap", data.params_used.chunk_overlap ?? "--");
+      setText("ctrl-temperature", data.params_used.temperature != null ? data.params_used.temperature.toFixed(2) : "--");
+      setText("ctrl-top-k", data.params_used.top_k ?? "--");
+    }
+  } catch (err) {
+    thinkingEl?.classList.add("hidden");
+    appendMessage("error", `[ERROR] ${err.message}`);
+  } finally {
+    sendBtn.disabled = false;
+    chatInput.disabled = false;
+    chatInput?.focus();
   }
 }
 
-// ── RENDER CHUNKS (right panel) ───────────────────────────────
+// ── MESSAGE RENDERER ────────────────────────────────────────────
+function appendMessage(role, content) {
+  const wrapper = document.createElement("div");
+  const isUser = role === "user";
+  const isError = role === "error";
+
+  wrapper.className = `flex flex-col ${isUser ? "items-end" : "items-start"} gap-1 message-enter`;
+
+  const time = new Date().toLocaleTimeString("en-GB", {
+    hour: "2-digit", minute: "2-digit", second: "2-digit"
+  });
+
+  let innerHtml;
+  if (isError) {
+    wrapper.className = "flex flex-col items-start gap-1 message-enter";
+    innerHtml = `
+      <div class="bg-error-bg border border-error/30 p-3 max-w-[85%] text-sm font-sans leading-relaxed text-error">${escapeHtml(content)}</div>
+      <span class="text-[9px] mono text-muted uppercase">SYSTEM — ${time}</span>`;
+  } else if (isUser) {
+    innerHtml = `
+      <div class="bg-ink text-paper p-3 max-w-[80%] text-sm font-sans leading-relaxed">${escapeHtml(content)}</div>
+      <span class="text-[9px] mono text-muted uppercase">YOU — ${time}</span>`;
+  } else {
+    const rendered = renderMarkdown(content);
+    innerHtml = `
+      <div class="bg-paper-2 text-ink-1 p-3 max-w-[85%] border border-outline text-sm font-sans leading-relaxed">
+        ${rendered}
+        <button onclick="copyText(this)" data-text="${escapeHtml(content)}" class="mt-2 text-[9px] mono text-muted hover:text-ink transition-colors flex items-center gap-1 uppercase">
+          <span class="material-symbols-outlined" style="font-size:12px">content_copy</span>
+          <span>COPY</span>
+        </button>
+      </div>
+      <span class="text-[9px] mono text-muted uppercase">ASSISTANT — ${time}</span>`;
+  }
+
+  wrapper.innerHTML = innerHtml;
+  chatLog.appendChild(wrapper);
+  chatLog.scrollTop = chatLog.scrollHeight;
+}
+
+function escapeHtml(str) {
+  return String(str ?? "")
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+}
+
+function renderMarkdown(text) {
+  if (!text) return "";
+  let html = escapeHtml(text);
+  // Bold
+  html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  // Italic
+  html = html.replace(/\*(.+?)\*/g, "<em>$1</em>");
+  // Code blocks
+  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, '<pre class="bg-paper-1 border border-outline p-2 my-2 text-[11px] mono overflow-x-auto">$2</pre>');
+  // Inline code
+  html = html.replace(/`(.+?)`/g, '<code class="bg-paper-1 text-ink-2 text-[11px] mono px-1">$1</code>');
+  // Newlines to <br>
+  html = html.replace(/\n/g, "<br/>");
+  return html;
+}
+
+function copyText(btn) {
+  const text = btn.getAttribute("data-text");
+  navigator.clipboard.writeText(text).then(() => {
+    const label = btn.querySelector("span:last-child");
+    if (label) {
+      const orig = label.textContent;
+      label.textContent = "COPIED";
+      setTimeout(() => { label.textContent = orig; }, 2000);
+    }
+  });
+}
+
+// ── CHUNKS RENDERER ─────────────────────────────────────────────
+function showChunksLoading(k) {
+  const container = $("chunks-container");
+  if (!container) return;
+  const empty = $("chunks-empty");
+  if (empty) empty.classList.add("hidden");
+  container.innerHTML = `
+    <div class="bg-paper-2 border border-outline p-4 flex items-center gap-2">
+      <div class="flex gap-1"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>
+      <span class="text-[10px] mono text-muted">RETRIEVING TOP-${k} CHUNKS...</span>
+    </div>`;
+}
+
 function renderChunks(chunks) {
-  const container = document.getElementById('chunks-container');
+  const container = $("chunks-container");
   if (!container) return;
 
   if (!chunks || chunks.length === 0) {
     container.innerHTML = `
-      <div class="bg-[#0a0a0a] border border-zinc-800 p-4 text-[11px] font-mono text-zinc-500 uppercase">
-        No chunks retrieved for this query.
-      </div>
-    `;
+      <div class="border border-dashed border-outline p-6 flex flex-col items-center text-center">
+        <span class="material-symbols-outlined text-muted mb-2" style="font-size:20px">search_off</span>
+        <p class="text-[10px] mono text-muted">No chunks retrieved.</p>
+      </div>`;
     return;
   }
 
-  const escapeHtml = (value) => String(value ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-
   container.innerHTML = chunks.map((c, i) => `
-    <div class="bg-[#0a0a0a] border border-zinc-800 p-4">
-      <div class="flex justify-between items-center mb-2">
-        <span class="text-[10px] font-mono text-white">CHUNK ${String(i + 1).padStart(2, '0')} / ${String(chunks.length).padStart(2, '0')}</span>
-        <span class="text-[10px] font-mono text-zinc-500">SCORE ${(c.score ?? 0).toFixed(2)}</span>
+    <div class="bg-paper-2 border border-outline p-3 message-enter" style="animation-delay:${i * 0.05}s">
+      <div class="flex justify-between items-center mb-1.5">
+        <span class="text-[9px] mono text-ink">CHUNK ${String(i + 1).padStart(2, "0")}</span>
+        <span class="text-[9px] mono text-muted">SCORE ${(c.score ?? 0).toFixed(3)}</span>
       </div>
-      <p class="text-[12px] font-sans text-zinc-400 leading-relaxed mb-3">${escapeHtml(c.text?.slice(0, 260) ?? '')}${(c.text && c.text.length > 260) ? '...' : ''}</p>
-      <div class="text-[9px] font-mono text-zinc-600 border-t border-zinc-900 pt-2 uppercase">${escapeHtml(c.source ?? 'FIA REGULATIONS 2024')}</div>
+      <p class="text-[11px] font-sans text-ink-2 leading-relaxed mb-2">${escapeHtml(c.text?.slice(0, 280) ?? "")}${(c.text && c.text.length > 280) ? "…" : ""}</p>
+      <div class="text-[8px] mono text-muted border-t border-outline pt-1.5 uppercase flex items-center gap-1">
+        <span class="material-symbols-outlined" style="font-size:10px">article</span>
+        ${escapeHtml(c.source ?? "FIA REGULATIONS")}
+      </div>
     </div>
-  `).join('');
+  `).join("");
 }
 
-function renderChunksLoading(topK) {
-  const container = document.getElementById('chunks-container');
-  if (!container) return;
-
-  container.innerHTML = `
-    <div class="bg-[#0a0a0a] border border-zinc-800 p-4 text-[11px] font-mono text-zinc-500 uppercase">
-      Retrieving top-${topK} chunks...
-    </div>
-  `;
-}
-
-// ── UPDATE PARAMS DISPLAY ─────────────────────────────────────
+// ── PARAMS DISPLAY ──────────────────────────────────────────────
 function updateParamsUsed(params) {
-  const el = document.getElementById('params-used-display');
-  if (!el || !params) return;
-  el.innerHTML = `
-    CHUNK ${params.chunk_size} &nbsp;|&nbsp;
-    OVERLAP ${params.chunk_overlap} &nbsp;|&nbsp;
-    TEMP ${params.temperature} &nbsp;|&nbsp;
-    TOP K ${params.top_k}
-  `;
+  if (!params) return;
+  setText("param-size", params.chunk_size ?? "--");
+  setText("param-over", params.chunk_overlap ?? "--");
+  setText("param-temp", params.temperature != null ? params.temperature.toFixed(2) : "--");
+  setText("param-k", params.top_k ?? "--");
 }
 
-// ── MESSAGE RENDERER ──────────────────────────────────────────
-function appendMessage(role, content) {
-  const log = document.getElementById('chat-log');
-  if (!log) return;
+// ── SIDEBAR / CONTEXT TOGGLES ──────────────────────────────────
+function toggleSidebar() {
+  const sb = $("sidebar");
+  const ov = $("sidebar-overlay");
+  sb.classList.toggle("open");
+  ov.classList.toggle("hidden");
+}
+function closeSidebar() {
+  $("sidebar")?.classList.remove("open");
+  $("sidebar-overlay")?.classList.add("hidden");
+}
+function toggleContext() {
+  const cp = $("context-panel");
+  const ov = $("context-overlay");
+  cp.classList.toggle("open");
+  ov.classList.toggle("hidden");
+}
+function closeContext() {
+  $("context-panel")?.classList.remove("open");
+  $("context-overlay")?.classList.add("hidden");
+}
 
-  const wrapper = document.createElement('div');
-  const isUser = role === 'user';
-  wrapper.className = `flex flex-col ${isUser ? 'items-end' : 'items-start'} gap-1`;
+// ── INIT ────────────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", () => {
+  // Populate example pills
+  const pillContainer = $("example-pills");
+  if (pillContainer) {
+    pillContainer.innerHTML = EXAMPLE_QUERIES.slice(0, 6).map((q, i) =>
+      `<button data-example-query="${escapeHtml(q)}" class="text-[10px] mono text-muted border border-outline px-3 py-1.5 hover:bg-paper-2 hover:text-ink transition-colors text-left leading-relaxed">
+        ${escapeHtml(q)}
+      </button>`
+    ).join("");
+  }
 
-  const time = new Date().toLocaleTimeString('en-GB', {
-    hour: '2-digit', minute: '2-digit', second: '2-digit'
+  // Wire example pills
+  document.querySelectorAll("[data-example-query]").forEach(pill => {
+    pill.addEventListener("click", () => {
+      const q = pill.dataset.exampleQuery;
+      if (q) {
+        appendMessage("user", q);
+        sendQuery(q);
+      }
+    });
   });
 
-  const styleClass = isUser ? 'bg-white text-black p-4 max-w-[80%] text-sm font-sans leading-relaxed' : 'bg-zinc-900 text-white p-4 max-w-[85%] border border-zinc-800 text-sm font-sans leading-relaxed';
-  const label = isUser ? `USER — ${time}` : `PHI3 — ${time}`;
-
-  wrapper.innerHTML = `
-    <div class="${styleClass}">${content}</div>
-    <span class="text-[10px] font-mono text-zinc-500 uppercase">${label}</span>
-  `;
-
-  log.appendChild(wrapper);
-  log.scrollTop = log.scrollHeight;
-
-  // Hide empty state if visible
-  const emptyState = document.getElementById('empty-state');
-  if (emptyState) emptyState.style.display = 'none';
-}
-
-// ── WIRE SEND BUTTON AND INPUT ────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  checkHealth();
-
-  // Load the actual best chunking parameters on init
-  function applyParams(best_params) {
-    if(!best_params || best_params.chunk_size == null) return;
-    document.getElementById('ctrl-chunk-size').textContent = best_params.chunk_size;
-    document.getElementById('ctrl-chunk-overlap').textContent = best_params.chunk_overlap;
-    document.getElementById('ctrl-temperature').textContent = best_params.temperature;
-    document.getElementById('ctrl-top-k').textContent = best_params.top_k;
-    // Only update params-used if it hasn't mapped a query yet, or just update the HUD bounds!
-  }
-
-  fetch('/api/benchmark/state')
-    .then(r => r.json())
-    .then(data => {
-      applyParams(data.best_params);
-      updateParamsUsed(data.best_params); // initial display
-    })
-    .catch(e => console.log('Failed to fetch best params:', e));
-
-  // Live update the stats if a benchmark is currently running in background
-  function connectLiveStats() {
-    const ws = new WebSocket(`ws://${window.location.host}/api/ws/benchmark`);
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.type === 'update' || data.type === 'complete') {
-        if(data.best_params) applyParams(data.best_params);
-      }
-    };
-    ws.onclose = () => setTimeout(connectLiveStats, 2000);
-  }
-  connectLiveStats();
-
-  const input  = document.getElementById('chat-input');
-  const button = document.getElementById('send-btn');
-
+  // Wire send
   function handleSend() {
-    const q = input?.value?.trim();
+    const q = chatInput?.value?.trim();
     if (!q) return;
-    appendMessage('user', q);
-    if(input) input.value = '';
+    appendMessage("user", q);
+    chatInput.value = "";
     sendQuery(q);
   }
 
-  button?.addEventListener('click', handleSend);
-  input?.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+  sendBtn?.addEventListener("click", handleSend);
+  chatInput?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
   });
 
-  document.querySelectorAll('[data-example-query]').forEach(pill => {
-    pill.addEventListener('click', () => {
-      if (input) input.value = pill.dataset.exampleQuery;
-      input?.focus();
-    });
+  // Enable send when input has text
+  chatInput?.addEventListener("input", () => {
+    sendBtn.disabled = !chatInput.value.trim();
   });
+
+  // ESC to focus input
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && document.activeElement !== chatInput) {
+      chatInput?.focus();
+    }
+  });
+
+  // Fetch data
+  checkHealth();
+  fetchBenchState();
+  connectWS();
+
+  // Focus input on load
+  chatInput?.focus();
 });
 </script>
-
-</body></html>
+</body>
+</html>

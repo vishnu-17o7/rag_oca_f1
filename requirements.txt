@@ -10,8 +10,10 @@ langchain-text-splitters
 langsmith
 leann
 sentence-transformers
-ollama
+transformers
 pypdf
+langchain-groq
+python-dotenv
 numpy
 matplotlib
 pandas

@@ -1,16 +1,9 @@
-myenv
-.venv/
-/__pycache__
-api/__pycache__
-__pycache__
-
-# Vector index directories
-leann_index/
-chroma_db/
-
-# Environment files
+myenv/
+**/__pycache__/
+*.pyc
 .env
-run.ps1
-
-# Results
+chroma_db/
+.ruff_cache/
+.cursor/
 results/
+*.log

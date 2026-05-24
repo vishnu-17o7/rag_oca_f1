@@ -1,11 +1,22 @@
+---
+title: F1 REG / RAG
+emoji: 🏎️
+colorFrom: black
+colorTo: gray
+sdk: docker
+app_port: 7860
+pinned: false
+license: mit
+---
+
 # RAG Hyperparameter Optimization with OCA
 
 Optimizing RAG Pipeline Hyperparameters for F1/FIA Regulatory Documents using the Overclocking Algorithm
 
-![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.12+-blue?logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-WebSocket-009688?logo=fastapi&logoColor=white)
 ![LangChain](https://img.shields.io/badge/LangChain-ChromaDB-FF6F00?logo=langchain&logoColor=white)
-![Ollama](https://img.shields.io/badge/Ollama-FF6F00?logo=ollama&logoColor=white)
+![Groq](https://img.shields.io/badge/Groq-LLM-F55036?logo=groq&logoColor=white)
 
 ---
 
@@ -146,8 +157,8 @@ rag_oca_f1/
 | Requirement | Version | Notes |
 |------------|---------|-------|
 | **Python** | 3.10+ | Required |
-| **Ollama** | Latest | Must have model pulled |
-| **Disk Space** | ~2GB | For models + vector stores |
+| **Groq API Key** | Required | Get at https://console.groq.com |
+| **Disk Space** | ~4GB | For models + vector stores |
 
 ### 1. Clone and Setup
 
@@ -172,17 +183,18 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 3. Pull Ollama Model
+### 3. Set Groq API Key
+
+Get a key at https://console.groq.com and create a `.env` file:
 
 ```bash
-# Option 1: TinyLlama (fastest, ~1GB)
-ollama pull tinyllama
+echo "GROQ_API_KEY=gsk_your_key_here" > .env
+```
 
-# Option 2: Phi-3 (better quality, ~2GB)
-ollama pull phi3
+Optionally set the model (default: `llama-3.3-70b-versatile`):
 
-# Option 3: Custom (set via OLLAMA_MODEL_PRIORITY)
-ollama pull qwen3.5:0.8b
+```bash
+echo "GROQ_MODEL_PRIORITY=llama-3.3-70b-versatile,llama-3.1-8b-instant" >> .env
 ```
 
 ### 4. Add PDF Documents
@@ -371,8 +383,9 @@ The fitness function evaluates against 8 domain-specific Q&A pairs:
 | **Server** | FastAPI + Uvicorn + WebSocket |
 | **RAG Framework** | LangChain + LangChain Community |
 | **Vector Store** | ChromaDB |
-| **Embeddings** | BAAI/bge-small-en-v1.5 |
-| **LLM** | Ollama (phi3, tinyllama, qwen) |
+| **Embeddings** | BAAI/bge-base-en-v1.5 |
+| **Re-ranker** | BAAI/bge-reranker-base (cross-encoder) |
+| **LLM** | Groq (llama-3.3-70b-versatile) |
 | **Fitness** | SentenceTransformers (all-MiniLM-L6-v2) |
 | **Optimizer** | Overclocking Algorithm (OCA) |
 | **Frontend** | TailwindCSS + Vanilla JS |

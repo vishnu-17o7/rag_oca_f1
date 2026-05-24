@@ -79,7 +79,7 @@
 <div class="flex items-center gap-6">
 <span class="text-sm font-bold tracking-[0.2em] text-white font-mono">F1 REG / BENCH</span>
 <div class="h-4 w-[1px] bg-zinc-800"></div>
-<span class="mono-label text-zinc-400">OCA OPTIMIZATION RUN #04</span>
+<span class="mono-label text-zinc-400">REAL-TIME BENCHMARK</span>
 </div>
 <div class="flex items-center gap-8">
 <div class="flex items-center gap-2">
@@ -159,21 +159,17 @@
 <div class="flex-1 relative border-l border-b border-zinc-800">
 <!-- SVG Chart Logic -->
 <svg id="convergence-chart" class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 100 100">
-<!-- Grid Lines -->
-<line stroke="#111" stroke-width="0.5" x1="0" x2="100" y1="25" y2="25"></line>
-<line stroke="#111" stroke-width="0.5" x1="0" x2="100" y1="50" y2="50"></line>
-<line stroke="#111" stroke-width="0.5" x1="0" x2="100" y1="75" y2="75"></line>
-<!-- Dotted Raw Data -->
-<polyline id="chart-raw-line" fill="none" points="0,90 10,85 20,88 30,70 40,75 50,60 60,65 70,40" stroke="#666" stroke-dasharray="2" stroke-width="1"></polyline>
-<!-- Solid Best Data -->
-<polyline id="chart-best-line" fill="none" points="0,90 10,85 20,85 30,70 40,70 50,60 60,60 70,40" stroke="white" stroke-width="1.5"></polyline>
-<!-- Pulsing Head -->
-<rect id="chart-pulsing-head" class="animate-pulse" fill="white" height="2" width="2" x="69" y="39"></rect>
-</svg>
-<!-- Axes -->
-<div id="convergence-x-axis" class="absolute bottom-[-20px] left-0 w-full flex justify-between mono-label text-[9px] text-zinc-600">
-<span>0</span><span>12</span><span>25</span><span>37</span><span>50</span>
-</div>
+            <g id="chart-grid-lines">
+              <line stroke="#111" stroke-width="0.5" x1="0" x2="100" y1="25" y2="25"></line>
+              <line stroke="#111" stroke-width="0.5" x1="0" x2="100" y1="50" y2="50"></line>
+              <line stroke="#111" stroke-width="0.5" x1="0" x2="100" y1="75" y2="75"></line>
+            </g>
+            <polyline id="chart-raw-line" fill="none" stroke="#666" stroke-dasharray="2" stroke-width="1"></polyline>
+            <polyline id="chart-best-line" fill="none" stroke="white" stroke-width="1.5"></polyline>
+            <rect id="chart-pulsing-head" class="animate-pulse" fill="white" height="2" width="2" style="display:none"></rect>
+            <text id="chart-no-data" x="50" y="50" text-anchor="middle" fill="#666" font-family="IBM Plex Mono, monospace" font-size="4">AWAITING DATA</text>
+          </svg>
+          <div id="convergence-x-axis" class="absolute bottom-[-20px] left-0 w-full flex justify-between mono-label text-[9px] text-zinc-600"></div>
 </div>
 </div>
 <!-- MIDDLE: SCATTER -->
@@ -198,8 +194,9 @@
 <div class="p-4 border-b border-zinc-800">
 <span class="mono-label">ITERATION LOG</span>
 </div>
-<div class="flex-1 overflow-y-auto scrollbar-custom">
-<table class="w-full mono-data text-[11px] border-collapse">
+    <div id="log-no-data" class="flex-1 flex items-center justify-center mono-label text-[9px] text-zinc-600">AWAITING DATA</div>
+    <div class="flex-1 overflow-y-auto scrollbar-custom" id="iteration-log-wrapper" style="display:none">
+        <table class="w-full mono-data text-[11px] border-collapse">
 <thead>
 <tr class="text-zinc-600 text-left">
 <th class="p-2 font-normal">#ID</th>
@@ -529,19 +526,17 @@ function updateBudgetCounter(data) {
 
 function updateIterationLog(history) {
   const tbody = document.getElementById('iteration-log-body');
+  const noData = document.getElementById('log-no-data');
+  const wrapper = document.getElementById('iteration-log-wrapper');
   if (!tbody) return;
 
   if (!history.length) {
-    tbody.innerHTML = `
-      <tr class="bg-black">
-        <td class="p-2 text-zinc-600">---</td>
-        <td class="p-2 text-zinc-600">----</td>
-        <td class="p-2 text-zinc-600">--</td>
-        <td class="p-2 text-zinc-600">WAITING</td>
-      </tr>
-    `;
+    if (noData) noData.style.display = 'flex';
+    if (wrapper) wrapper.style.display = 'none';
     return;
   }
+  if (noData) noData.style.display = 'none';
+  if (wrapper) wrapper.style.display = 'flex';
 
   const validFitnessValues = history
     .filter((item) => item.status !== 'PENALTY')
@@ -593,14 +588,17 @@ function updateConvergenceChart(history, totalBudget) {
   const rawLine = document.getElementById('chart-raw-line');
   const bestLine = document.getElementById('chart-best-line');
   const head = document.getElementById('chart-pulsing-head');
+  const noData = document.getElementById('chart-no-data');
   if (!rawLine || !bestLine || !head) return;
 
   if (!history.length) {
     rawLine.setAttribute('points', '');
     bestLine.setAttribute('points', '');
     head.style.display = 'none';
+    if (noData) noData.style.display = 'block';
     return;
   }
+  if (noData) noData.style.display = 'none';
 
   const budget = Math.max(1, asNumber(totalBudget, history.length));
   let bestSoFar = 0;
@@ -637,7 +635,7 @@ function updateScatterPlot(history) {
 
   if (!history.length) {
     container.innerHTML = `
-      <div class="absolute inset-0 flex items-center justify-center mono-label text-[9px] text-zinc-600">WAITING FOR ITERATIONS</div>
+      <div class="absolute inset-0 flex items-center justify-center mono-label text-[9px] text-zinc-600">AWAITING DATA — START A RUN</div>
       <div class="absolute -left-8 top-1/2 -rotate-90 mono-label text-[8px] text-zinc-600">FITNESS</div>
       <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 mono-label text-[8px] text-zinc-600">${AXIS_LABELS[activeScatterAxis]}</div>
     `;

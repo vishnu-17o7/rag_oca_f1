@@ -8,10 +8,10 @@ router = APIRouter()
 
 class QueryRequest(BaseModel):
     question: str
-    chunk_size: int = 1000
-    chunk_overlap: int = 200
-    temperature: float = 0.2
-    top_k: int = 6
+    chunk_size: int = 700
+    chunk_overlap: int = 100
+    temperature: float = 0.0
+    top_k: int = 4
 
 class QueryResponse(BaseModel):
     answer: str
@@ -64,7 +64,7 @@ async def query_rag(req: QueryRequest):
 
 @router.get("/health")
 async def health():
-    """Returns Ollama status and whether PDFs are loaded."""
+    """Returns server status and PDF count."""
     import glob, os
     pdfs = glob.glob("data/*.pdf")
     return {

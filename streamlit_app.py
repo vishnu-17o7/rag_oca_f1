@@ -499,7 +499,17 @@ def main():
 
         # Check if optimization is complete
         if not st.session_state.complete or st.session_state.best_params is None:
-            st.markdown("Complete optimization first to enable chat.")
+            st.markdown("Optimization not yet complete. Chat uses default parameters.")
+            # Allow chat with default params even without optimization
+            if st.session_state.rag_pipeline is None:
+                with st.spinner("Loading RAG pipeline with defaults..."):
+                    from src.rag_pipeline import RAGPipeline
+                    st.session_state.rag_pipeline = RAGPipeline(
+                        chunk_size=700,
+                        chunk_overlap=100,
+                        top_k=4,
+                        temperature=0.0,
+                    )
         else:
             # Initialize RAG pipeline if needed
             if st.session_state.rag_pipeline is None:

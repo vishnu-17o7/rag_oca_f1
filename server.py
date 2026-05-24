@@ -1,10 +1,9 @@
 import asyncio
 import os
-
 from dotenv import load_dotenv
-load_dotenv()
-
 from fastapi import FastAPI
+
+load_dotenv()
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from api.routes_chat import router as chat_router
@@ -13,12 +12,12 @@ from api.state import rag_cache, rag_init_lock
 from src.rag_pipeline import RAGPipeline
 from contextlib import asynccontextmanager
 
-DEFAULT_RAG_KEY = (1000, 200, 0.2, 6)
+DEFAULT_RAG_KEY = (700, 100, 0.0, 4)
 DEFAULT_RAG_PARAMS = {
-    "chunk_size": 1000,
-    "chunk_overlap": 200,
-    "top_k": 6,
-    "temperature": 0.2,
+    "chunk_size": 700,
+    "chunk_overlap": 100,
+    "top_k": 4,
+    "temperature": 0.0,
 }
 
 
@@ -81,5 +80,5 @@ async def serve_chat():
 async def serve_benchmark():
     return FileResponse("static/benchmark.html")
 
-# Run with: uvicorn server:app --reload --reload-exclude ".venv/**" --reload-exclude "leann_index/**" --reload-exclude "chroma_db/**" --port 8000
+# Run with: uvicorn server:app --port 8000
 # Optional: RAG_STARTUP_MODE=background|blocking|lazy (default: lazy)
