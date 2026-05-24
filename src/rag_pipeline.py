@@ -389,7 +389,7 @@ Answer:"""
                 {
                     "text": doc.page_content,
                     "score": float(score),
-                    "source": os.path.basename(doc.metadata.get("source", "FIA REGULATIONS")),
+                    "source": doc.metadata.get("source", "FIA REGULATIONS").split("\\")[-1].split("/")[-1],
                 }
                 for doc, score in top_results
             ]
