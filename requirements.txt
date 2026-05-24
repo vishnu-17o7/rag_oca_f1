@@ -14,6 +14,7 @@ transformers
 pypdf
 langchain-groq
 langchain-huggingface
+langchain-chroma
 python-dotenv
 numpy
 matplotlib
