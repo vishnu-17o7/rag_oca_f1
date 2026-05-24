@@ -34,7 +34,7 @@ def _ts():
 
 def _log(msg):
     """Print with timestamp and immediate flush for HF Space log collector."""
-    _log(f" {msg}")
+    print(f"[{_ts()}] {msg}")
     sys.stdout.flush()
 
 
